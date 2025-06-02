@@ -70,4 +70,4 @@ const maintenanceScheduleSchema = new mongoose.Schema(
   },
 )
 
-module.exports = mongoose.model("MaintenanceSchedule", maintenanceScheduleSchema)
+module.exports = mongoose.model("Maintenance", maintenanceScheduleSchema)

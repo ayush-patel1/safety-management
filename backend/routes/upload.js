@@ -1,7 +1,7 @@
 const express = require("express")
 const upload = require("../middlewares/upload")
 const { auth } = require("../middlewares/auth")
-const cloudinary = require("../utils/cloudinary")
+const cloudinary = require("../config/cloudinary")
 
 const router = express.Router()
 

@@ -145,7 +145,7 @@ maintenanceScheduleSchema.methods.calculateNextScheduledDate = function () {
       nextDate.setFullYear(nextDate.getFullYear() + 1)
       break
     default:
-      // Custom frequency - no automatic calculation
+      //resolve issue here at this statement
       return null
   }
 
@@ -190,4 +190,5 @@ maintenanceScheduleSchema.statics.findUpcoming = function () {
   }).populate("machine", "name machineId department")
 }
 
-const MaintenanceSchedule = mongoose.model('MaintenanceSchedule', maintenanceSchema);
+const MaintenanceSchedule = mongoose.model('MaintenanceSchedule', maintenanceScheduleSchema);
+module.exports = MaintenanceSchedule
