@@ -1,11 +1,89 @@
-/* Reset and base styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-* {
-  border-color: #e5e7eb; /* Replace with your border color */
+
+@layer utilities {
+  .resize-vertical {
+    resize: vertical;
+  }
 }
-body {
-  background-color: #f9fafb; /* Replace with your background color */
-  color: #111827; /* Replace with your foreground color */
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  .btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md border border-gray-200;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+
+  .select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white;
+  }
+
+  .textarea {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical;
+  }
+
+  .status-running {
+    @apply bg-green-100 text-green-800 border-green-200;
+  }
+
+  .status-down {
+    @apply bg-red-100 text-red-800 border-red-200;
+  }
+
+  .status-maintenance {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+  }
+
+  .status-idle {
+    @apply bg-gray-100 text-gray-800 border-gray-200;
+  }
+
+  .priority-low {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .priority-medium {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .priority-high {
+    @apply bg-orange-100 text-orange-800;
+  }
+
+  .priority-critical {
+    @apply bg-red-100 text-red-800;
+  }
 }
