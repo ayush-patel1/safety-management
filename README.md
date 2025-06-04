@@ -7,9 +7,9 @@ A full-stack web application for managing machines, tickets, incidents, maintena
 ## Screenshots
 
 <!-- Add your images to the `frontend/screenshots/` folder or similar and update the paths below -->
-![Dashboard Screenshot](frontend/public/Dashboard.png)
-![Analytics Page](frontend/screenshots/Analytics.png)
-![Sidebar Example](frontend/screenshots/Machines.png)
+![Dashboard Screenshot](frontend/ss/Dashboard.png)
+![Analytics Page](frontend/ss/Analytics.png)
+![Sidebar Example](frontend/ss/Machines.png)
 
 ---
 
