@@ -1,6 +1,5 @@
 "use client"
-import React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { Search, Filter, Plus, Eye, AlertTriangle, Calendar, FileText } from "lucide-react"
 import CreateIncidentModal from "../components/CreateIncidentModal"
@@ -69,7 +68,6 @@ const Incidents = () => {
     }
   }
 
-  // Calculate stats
   const openIncidents = incidents.filter((i) => i.status === "Open").length
   const underInvestigation = incidents.filter((i) => i.status === "Under Investigation").length
   const criticalSeverity = incidents.filter((i) => i.severity === "Critical").length
@@ -270,6 +268,23 @@ const Incidents = () => {
 
       {/* Modals */}
       {showCreateModal && <CreateIncidentModal onClose={() => setShowCreateModal(false)} />}
+
+      {/* View Details Modal */}
+      {selectedIncident && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">{selectedIncident.title}</h2>
+            <p className="mb-2"><strong>Type:</strong> {selectedIncident.type}</p>
+            <p className="mb-2"><strong>Severity:</strong> {selectedIncident.severity}</p>
+            <p className="mb-2"><strong>Status:</strong> {selectedIncident.status}</p>
+            <p className="mb-2"><strong>Description:</strong> {selectedIncident.description}</p>
+            <p className="mb-2"><strong>Location:</strong> {selectedIncident.location}</p>
+            <p className="mb-2"><strong>Department:</strong> {selectedIncident.department}</p>
+            <p className="mb-4"><strong>Date:</strong> {new Date(selectedIncident.incidentDate).toLocaleDateString()}</p>
+            <button className="btn btn-secondary" onClick={() => setSelectedIncident(null)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
