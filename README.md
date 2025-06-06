@@ -1,4 +1,4 @@
-# IMSP (Industrial Maintenance & Service Platform)
+# Hindalco Safety & Maintenance Platform
 
 A full-stack web application for managing machines, tickets, incidents, maintenance schedules, analytics, and user profiles in an industrial environment.
 
