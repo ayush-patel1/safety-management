@@ -2,6 +2,9 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 const User = require("../models/User")
 const Machine = require("../models/machine")
+const Ticket = require("../models/Ticket")
+const Incident = require("../models/Incident")
+const MaintenanceSchedule = require("../models/MaintenanceSchedule")
 const dotenv = require("dotenv")
 
 dotenv.config()
@@ -13,6 +16,9 @@ const seedData = async () => {
     // Clear existing data
     await User.deleteMany({})
     await Machine.deleteMany({})
+    await Ticket.deleteMany({})
+    await Incident.deleteMany({})
+    await MaintenanceSchedule.deleteMany({})
 
     // Create users
     const users = [
@@ -125,6 +131,107 @@ const seedData = async () => {
     ]
 
     await Machine.insertMany(machines)
+
+    // Create tickets
+    const tickets = [
+      {
+        title: "Oil Leakage in Rolling Mill #1",
+        description: "Detected oil leakage near the main shaft.",
+        machine: null, // will set after machines are created
+        reportedBy: null, // will set after users are created
+        status: "Open",
+        priority: "High",
+        assignedTo: null, // will set after users are created
+        createdAt: new Date(),
+      },
+      {
+        title: "Temperature Fluctuation in Smelting Furnace #1",
+        description: "Temperature sensor shows abnormal readings.",
+        machine: null,
+        reportedBy: null,
+        status: "In Progress",
+        priority: "Medium",
+        assignedTo: null,
+        createdAt: new Date(),
+      },
+    ]
+
+    // Fetch users and machines for references
+    const allUsers = await User.find()
+    const allMachines = await Machine.find()
+
+    // Assign references for tickets
+    tickets[0].machine = allMachines[0]._id
+    tickets[0].reportedBy = allUsers[2]._id // Jane Operator
+    tickets[0].assignedTo = allUsers[1]._id // John Engineer
+
+    tickets[1].machine = allMachines[1]._id
+    tickets[1].reportedBy = allUsers[3]._id // Safety Officer
+    tickets[1].assignedTo = allUsers[1]._id // John Engineer
+
+    await Ticket.insertMany(tickets)
+
+    // Create incidents
+    const incidents = [
+      {
+        title: "Minor Fire in Smelting Area",
+        description: "Small fire broke out, quickly contained.",
+        machine: allMachines[1]._id,
+        reportedBy: allUsers[3]._id,
+        severity: "High",
+        status: "Resolved",
+        occurredAt: new Date("2023-05-10T10:30:00Z"),
+      },
+      {
+        title: "Worker Injury in Rolling Mill",
+        description: "Operator injured hand during maintenance.",
+        machine: allMachines[0]._id,
+        reportedBy: allUsers[2]._id,
+        severity: "Medium",
+        status: "Investigating",
+        occurredAt: new Date("2023-06-01T14:00:00Z"),
+      },
+    ]
+
+    await Incident.insertMany(incidents)
+
+    // Create maintenance schedules
+    const schedules = [
+      {
+        machine: allMachines[0]._id,
+        title: "Monthly Lubrication",
+        description: "Lubricate all moving parts.",
+        type: "Preventive",
+        frequency: "Monthly",
+        scheduledDate: new Date("2023-07-01"),
+        estimatedDuration: 2,
+        assignedTo: allUsers[1]._id,
+        status: "Scheduled",
+        priority: "Medium",
+        checklist: [
+          { task: "Check oil level", completed: false },
+          { task: "Lubricate bearings", completed: false },
+        ],
+      },
+      {
+        machine: allMachines[2]._id,
+        title: "Quarterly Inspection",
+        description: "Full inspection of casting machine.",
+        type: "Predictive",
+        frequency: "Quarterly",
+        scheduledDate: new Date("2023-08-15"),
+        estimatedDuration: 4,
+        assignedTo: allUsers[1]._id,
+        status: "Scheduled",
+        priority: "High",
+        checklist: [
+          { task: "Inspect sensors", completed: false },
+          { task: "Test emergency stop", completed: false },
+        ],
+      },
+    ]
+
+    await MaintenanceSchedule.insertMany(schedules)
 
     console.log("Seed data created successfully!")
     console.log("Users created:")
