@@ -19,7 +19,7 @@ const app = express()
 
 // Middleware
 app.use(cors({
-  origin: "*",
+  origin: "https://safety-management-f.onrender.com",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],  
 }))
