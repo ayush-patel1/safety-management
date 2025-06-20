@@ -69,7 +69,7 @@ const Login = () => {
       className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4"
       style={{ backgroundImage: `url(${renukut})` }}
     >
-      <div className="w-full max-w-md bg-white bg-opacity-60 backdrop-blur-md rounded-lg shadow-lg p-8 pl-10 pr-10">
+      <div className="w-full max-w-sm bg-white bg-opacity-60 backdrop-blur-md rounded-lg shadow-lg p-8 pl-10 pr-10">
         <div className="flex justify-center mb-4">
           <img src={hindalcoLogo || "/placeholder.svg"} alt="Hindalco" className="h-16 w-17" />
         </div>
