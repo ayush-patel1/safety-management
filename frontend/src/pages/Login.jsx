@@ -1,8 +1,10 @@
 import React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
-import { Eye, EyeOff, Settings } from "lucide-react"
+import renukut from "../assets/renukut.jpg"
+import hindalcoLogo from "../assets/hindalco-logo.png"
+import { Eye, EyeOff } from "lucide-react"
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -17,8 +19,15 @@ const Login = () => {
   })
   const [loading, setLoading] = useState(false)
 
-  const { login, register } = useAuth()
+  const { login, register, user } = useAuth()
   const navigate = useNavigate()
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true })
+    }
+  }, [user, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,8 +42,8 @@ const Login = () => {
       }
 
       if (result.success) {
-        // Navigate to dashboard after successful login/register
-        navigate("/", { replace: true })
+        // Navigation will happen automatically via useEffect when user state changes
+        console.log("Authentication successful, redirecting...")
       }
     } catch (error) {
       console.error("Authentication error:", error)
@@ -50,175 +59,163 @@ const Login = () => {
     })
   }
 
+  // Don't render if user is already logged in
+  if (user) {
+    return null
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <Settings className="h-12 w-12 text-blue-600" />
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4"
+      style={{ backgroundImage: `url(${renukut})` }}
+    >
+      <div className="w-full max-w-md bg-white bg-opacity-60 backdrop-blur-md rounded-lg shadow-lg p-8 pl-10 pr-10">
+        <div className="flex justify-center mb-4">
+          <img src={hindalcoLogo || "/placeholder.svg"} alt="Hindalco" className="h-16 w-17" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Industrial Maintenance & Safety Portal
-        </h2>
+        <h2 className="text-center text-2xl font-bold text-gray-900">Industrial Maintenance & Safety Portal</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           {isLogin ? "Sign in to your account" : "Create a new account"}
         </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {!isLogin && (
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required={!isLogin}
-                    className="input"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-            )}
-
+        <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+          {!isLogin && (
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Full Name
               </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="input"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                className="input"
+                value={formData.name}
+                onChange={handleChange}
+              />
             </div>
+          )}
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  className="input pr-10"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
-                </button>
-              </div>
-            </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className="input"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
 
-            {!isLogin && (
-              <>
-                <div>
-                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                    Role
-                  </label>
-                  <div className="mt-1">
-                    <select id="role" name="role" className="select" value={formData.role} onChange={handleChange}>
-                      <option value="operator">Operator</option>
-                      <option value="maintenance_engineer">Maintenance Engineer</option>
-                      <option value="safety_officer">Safety Officer</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                    Department
-                  </label>
-                  <div className="mt-1">
-                    <select
-                      id="department"
-                      name="department"
-                      className="select"
-                      value={formData.department}
-                      onChange={handleChange}
-                    >
-                      <option value="Rolling Mill">Rolling Mill</option>
-                      <option value="Smelting">Smelting</option>
-                      <option value="Casting">Casting</option>
-                      <option value="Quality Control">Quality Control</option>
-                      <option value="Maintenance">Maintenance</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                    Phone Number
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      className="input"
-                      value={formData.phone}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div>
-              <button type="submit" disabled={loading} className="w-full btn btn-primary disabled:opacity-50">
-                {loading ? "Please wait..." : isLogin ? "Sign in" : "Sign up"}
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <div className="text-center">
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="input pr-10"
+                value={formData.password}
+                onChange={handleChange}
+              />
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:text-blue-500"
-                onClick={() => setIsLogin(!isLogin)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
               >
-                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400" />
+                )}
               </button>
             </div>
           </div>
 
-          {isLogin && (
-            <div className="mt-6 p-4 bg-blue-50 rounded-md">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Accounts:</h3>
-              <div className="text-xs text-blue-700 space-y-1">
-                <div>Admin: admin@imsp.com / admin123</div>
-                <div>Engineer: john@imsp.com / engineer123</div>
-                <div>Operator: jane@imsp.com / operator123</div>
-                <div>Safety: safety@imsp.com / safety123</div>
+          {!isLogin && (
+            <>
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+                  Role
+                </label>
+                <select id="role" name="role" className="select" value={formData.role} onChange={handleChange}>
+                  <option value="operator">Operator</option>
+                  <option value="maintenance_engineer">Maintenance Engineer</option>
+                  <option value="safety_officer">Safety Officer</option>
+                  <option value="admin">Admin</option>
+                </select>
               </div>
-            </div>
+
+              <div>
+                <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+                  Department
+                </label>
+                <select
+                  id="department"
+                  name="department"
+                  className="select"
+                  value={formData.department}
+                  onChange={handleChange}
+                >
+                  <option value="Rolling Mill">Rolling Mill</option>
+                  <option value="Smelting">Smelting</option>
+                  <option value="Casting">Casting</option>
+                  <option value="Quality Control">Quality Control</option>
+                  <option value="Maintenance">Maintenance</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  className="input"
+                  value={formData.phone}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
           )}
+
+          <div>
+            <button type="submit" disabled={loading} className="w-full btn btn-primary disabled:opacity-50">
+              {loading ? "Please wait..." : isLogin ? "Sign in" : "Sign up"}
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            className="text-sm text-blue-600 hover:text-blue-700"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+          </button>
         </div>
+
+        {isLogin && (
+          <div className="mt-6 p-4 bg-blue-50 bg-opacity-80 rounded-md">
+            <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Accounts:</h3>
+            <div className="text-xs text-blue-700 space-y-1">
+              <div>Admin: admin@imsp.com / admin123</div>
+              <div>Engineer: john@imsp.com / engineer123</div>
+              <div>Operator: jane@imsp.com / operator123</div>
+              <div>Safety: safety@imsp.com / safety123</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
