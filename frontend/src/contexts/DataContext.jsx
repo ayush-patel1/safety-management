@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext } from "react"
 import axios from "axios"
 import React from "react"
@@ -7,7 +5,7 @@ import toast from "react-hot-toast"
 
 const DataContext = createContext()
 
-const API_BASE_URL = import.meta.env.REACT_APP_API_URL || "http://localhost:5000"
+const API_BASE_URL = import.meta.env.REACT_APP_API_URL
 axios.defaults.baseURL = API_BASE_URL
 
 export const useData = () => {
