@@ -1,13 +1,11 @@
-"use client"
-
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
 import toast from "react-hot-toast"
-
+import React from "react"
 const AuthContext = createContext()
 
 // Set up axios defaults
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+const API_BASE_URL = import.meta.env.REACT_APP_API_URL || "http://localhost:5000"
 axios.defaults.baseURL = API_BASE_URL
 
 export const useAuth = () => {

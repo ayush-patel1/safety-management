@@ -1,5 +1,4 @@
-"use client"
-
+import React from "react"
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { User, Mail, Phone, Building, Shield, Edit, Save, X } from "lucide-react"

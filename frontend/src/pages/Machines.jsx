@@ -1,5 +1,4 @@
-"use client"
-
+import React from "react"
 import { useState } from "react"
 import { usePaginatedApi } from "../hooks/useApi"
 import { useData } from "../contexts/DataContext"

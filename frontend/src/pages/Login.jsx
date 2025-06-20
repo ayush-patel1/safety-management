@@ -1,8 +1,7 @@
-"use client"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { Eye, EyeOff, Settings } from "lucide-react"
+import hindalcoLogo from "../assets/hindalco-logo.png"
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -42,7 +41,16 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div
+      className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+      style={{
+        backgroundImage: `url(${hindalcoLogo})`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "200px",
+        backgroundColor: "#f9fafb",
+      }}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Settings className="h-12 w-12 text-blue-600" />

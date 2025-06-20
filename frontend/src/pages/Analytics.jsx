@@ -1,4 +1,5 @@
 import { useApi } from "../hooks/useApi"
+import React from "react"
 import {
   BarChart,
   Bar,

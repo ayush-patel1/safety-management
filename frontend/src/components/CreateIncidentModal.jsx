@@ -1,5 +1,5 @@
-"use client"
 
+import React from "react"
 import { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { useAuth } from "../contexts/AuthContext"

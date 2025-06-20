@@ -1,6 +1,7 @@
 import { useApi } from "../hooks/useApi"
 import { Settings, AlertTriangle, Wrench, Calendar, TrendingUp, TrendingDown, Activity } from "lucide-react"
 import LoadingSpinner from "../components/LoadingSpinner"
+import React from "react"
 
 const Dashboard = () => {
   const { data: dashboardData, loading: dashboardLoading } = useApi("/api/analytics/dashboard")
