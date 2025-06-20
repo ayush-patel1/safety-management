@@ -6,7 +6,7 @@ import React from "react"
 const AuthContext = createContext()
 
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+const API_BASE_URL = import.meta.env.REACT_APP_API_URL || "http://localhost:5000"
 axios.defaults.baseURL = API_BASE_URL
 
 export const useAuth = () => {
@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const login = async (email, password) => {
+    console.log(API_BASE_URL);
     try {
       const response = await axios.post("/api/auth/login", { email, password })
       const { token, user } = response.data
