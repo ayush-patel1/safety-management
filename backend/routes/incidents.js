@@ -1,7 +1,7 @@
 const express = require("express")
 const multer = require("multer")
 const path = require("path")
-const Incident = require("../models/incident")
+const Incident = require("../models/Incident")
 const { auth, authorize } = require("../middlewares/auth")
 
 const router = express.Router()

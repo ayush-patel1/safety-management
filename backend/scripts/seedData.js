@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const User = require("../models/User")
 const Machine = require("../models/machine")
 const Ticket = require("../models/Ticket")
-const Incident = require("../models/incident")
+const Incident = require("../models/Incident")
 const MaintenanceSchedule = require("../models/MaintenanceSchedule")
 const dotenv = require("dotenv")
 
