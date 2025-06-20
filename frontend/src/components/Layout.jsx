@@ -1,26 +1,65 @@
 import React from "react"
 import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
+import RoleBasedAccess from "./RoleBasedAccess"
 import { Menu, X, Home, Settings, AlertTriangle, Wrench, Calendar, BarChart3, User, LogOut, Bell } from "lucide-react"
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate("/login")
+  }
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: Home },
-    { name: "Machines", href: "/machines", icon: Settings },
-    { name: "Tickets", href: "/tickets", icon: Wrench },
-    { name: "Incidents", href: "/incidents", icon: AlertTriangle },
-    { name: "Maintenance", href: "/maintenance", icon: Calendar },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    {
+      name: "Dashboard",
+      href: "/",
+      icon: Home,
+      roles: ["admin", "maintenance_engineer", "safety_officer", "operator"],
+    },
+    {
+      name: "Machines",
+      href: "/machines",
+      icon: Settings,
+      roles: ["admin", "maintenance_engineer", "safety_officer", "operator"],
+    },
+    {
+      name: "Tickets",
+      href: "/tickets",
+      icon: Wrench,
+      roles: ["admin", "maintenance_engineer", "safety_officer", "operator"],
+    },
+    {
+      name: "Incidents",
+      href: "/incidents",
+      icon: AlertTriangle,
+      roles: ["admin", "maintenance_engineer", "safety_officer", "operator"],
+    },
+    {
+      name: "Maintenance",
+      href: "/maintenance",
+      icon: Calendar,
+      roles: ["admin", "maintenance_engineer"],
+    },
+    {
+      name: "Analytics",
+      href: "/analytics",
+      icon: BarChart3,
+      roles: ["admin", "safety_officer"],
+    },
   ]
 
   const isActive = (href) => {
     return location.pathname === href
   }
+
+  const filteredNavigation = navigation.filter((item) => item.roles.includes(user?.role))
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,7 +74,7 @@ const Layout = ({ children }) => {
             </button>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const Icon = item.icon
               return (
                 <Link
@@ -64,7 +103,7 @@ const Layout = ({ children }) => {
             <h1 className="text-xl font-bold text-gray-900">IMSP</h1>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const Icon = item.icon
               return (
                 <Link
@@ -95,20 +134,22 @@ const Layout = ({ children }) => {
             </button>
 
             <div className="flex items-center space-x-4">
-              <button className="text-gray-400 hover:text-gray-600">
-                <Bell className="h-6 w-6" />
-              </button>
+              <RoleBasedAccess allowedRoles={["admin", "safety_officer"]}>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Bell className="h-6 w-6" />
+                </button>
+              </RoleBasedAccess>
 
               <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.role?.replace("_", " ")}</p>
+                  <p className="text-xs text-gray-500 capitalize">{user?.role?.replace("_", " ")}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Link to="/profile" className="text-gray-400 hover:text-gray-600">
                     <User className="h-6 w-6" />
                   </Link>
-                  <button onClick={logout} className="text-gray-400 hover:text-gray-600">
+                  <button onClick={handleLogout} className="text-gray-400 hover:text-gray-600">
                     <LogOut className="h-6 w-6" />
                   </button>
                 </div>

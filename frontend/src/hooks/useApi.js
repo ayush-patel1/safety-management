@@ -1,50 +1,34 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { useAuth } from "../contexts/AuthContext"
 
 export const useApi = (url, options = {}) => {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  const { dependencies = [], transform } = options
+  const { user } = useAuth()
 
   useEffect(() => {
+    if (!user) return
+
     const fetchData = async () => {
       try {
         setLoading(true)
-        setError(null)
         const response = await axios.get(url)
-        const result = transform ? transform(response.data) : response.data
+        const result = options.transform ? options.transform(response.data) : response.data
         setData(result)
       } catch (err) {
         setError(err)
+        console.error(`API Error for ${url}:`, err)
       } finally {
         setLoading(false)
       }
     }
 
-    if (url) {
-      fetchData()
-    }
-  }, [url, ...dependencies])
+    fetchData()
+  }, [url, user, options.transform])
 
-  const refetch = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await axios.get(url)
-      const result = transform ? transform(response.data) : response.data
-      setData(result)
-    } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { data, loading, error, refetch }
+  return { data, loading, error }
 }
 
 export const usePaginatedApi = (url, options = {}) => {
@@ -56,10 +40,13 @@ export const usePaginatedApi = (url, options = {}) => {
     totalPages: 1,
     total: 0,
   })
+  const { user } = useAuth()
 
   const { filters = {}, limit = 10 } = options
 
   useEffect(() => {
+    if (!user) return
+
     const fetchData = async () => {
       try {
         setLoading(true)
@@ -102,13 +89,14 @@ export const usePaginatedApi = (url, options = {}) => {
         }
       } catch (err) {
         setError(err)
+        console.error(`API Error for ${url}:`, err)
       } finally {
         setLoading(false)
       }
     }
 
     fetchData()
-  }, [url, JSON.stringify(filters), limit])
+  }, [url, JSON.stringify(filters), limit, user])
 
   const refetch = async () => {
     try {
@@ -149,6 +137,7 @@ export const usePaginatedApi = (url, options = {}) => {
       }
     } catch (err) {
       setError(err)
+      console.error(`API Error for ${url}:`, err)
     } finally {
       setLoading(false)
     }
