@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
-import React from "react"
 import toast from "react-hot-toast"
+import React from "react"
 
 const AuthContext = createContext()
 
-const API_BASE_URL = import.meta.REACT_APP_API_URL;
-axios.defaults.baseURL = API_BASE_URL;
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+axios.defaults.baseURL = API_BASE_URL
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Auth check failed:", error)
       localStorage.removeItem("token")
       delete axios.defaults.headers.common["Authorization"]
+      setUser(null)
     } finally {
       setLoading(false)
     }
@@ -53,7 +55,8 @@ export const AuthProvider = ({ children }) => {
       toast.success("Login successful!")
       return { success: true, user }
     } catch (error) {
-      const message = error.response?.data?.message || "Login failed"
+      console.error("Login error:", error)
+      const message = error.response?.data?.message || "Invalid email or password"
       toast.error(message)
       return { success: false, message }
     }
@@ -71,6 +74,7 @@ export const AuthProvider = ({ children }) => {
       toast.success("Registration successful!")
       return { success: true, user }
     } catch (error) {
+      console.error("Registration error:", error)
       const message = error.response?.data?.message || "Registration failed"
       toast.error(message)
       return { success: false, message }
@@ -91,6 +95,7 @@ export const AuthProvider = ({ children }) => {
       toast.success("Profile updated successfully!")
       return { success: true }
     } catch (error) {
+      console.error("Update profile error:", error)
       const message = error.response?.data?.message || "Update failed"
       toast.error(message)
       return { success: false, message }

@@ -25,6 +25,7 @@ const Login = () => {
   // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
+      console.log("User found, redirecting to dashboard:", user)
       navigate("/", { replace: true })
     }
   }, [user, navigate])
@@ -36,14 +37,19 @@ const Login = () => {
     try {
       let result
       if (isLogin) {
+        console.log("Attempting login with:", formData.email)
         result = await login(formData.email, formData.password)
       } else {
+        console.log("Attempting registration with:", formData.email)
         result = await register(formData)
       }
 
+      console.log("Authentication result:", result)
+
       if (result.success) {
-        // Navigation will happen automatically via useEffect when user state changes
-        console.log("Authentication successful, redirecting...")
+        console.log("Authentication successful, user should be set in context")
+      } else {
+        console.log("Authentication failed:", result.message)
       }
     } catch (error) {
       console.error("Authentication error:", error)
@@ -61,7 +67,14 @@ const Login = () => {
 
   // Don't render if user is already logged in
   if (user) {
-    return null
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -69,7 +82,7 @@ const Login = () => {
       className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4"
       style={{ backgroundImage: `url(${renukut})` }}
     >
-      <div className="w-full max-w-sm bg-white bg-opacity-60 backdrop-blur-md rounded-lg shadow-lg p-3 pl-10 pr-10">
+      <div className="w-full max-w-md bg-white bg-opacity-60 backdrop-blur-md rounded-lg shadow-lg p-8 pl-10 pr-10">
         <div className="flex justify-center mb-4">
           <img src={hindalcoLogo || "/placeholder.svg"} alt="Hindalco" className="h-16 w-17" />
         </div>
@@ -204,18 +217,6 @@ const Login = () => {
             {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
           </button>
         </div>
-
-        {isLogin && (
-          <div className="mt-6 p-4 bg-blue-50 bg-opacity-80 rounded-md">
-            <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Accounts:</h3>
-            <div className="text-xs text-blue-700 space-y-1">
-              <div>Admin: admin@imsp.com / admin123</div>
-              <div>Engineer: john@imsp.com / engineer123</div>
-              <div>Operator: jane@imsp.com / operator123</div>
-              <div>Safety: safety@imsp.com / safety123</div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
