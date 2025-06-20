@@ -27,7 +27,7 @@ const Profile = () => {
     setLoading(true)
     try {
       const token = localStorage.getItem("token")
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/auth/profile`, formData, {
+      await axios.put(`${process.env.VITE_REACT_APP_API_URL}/api/auth/profile`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

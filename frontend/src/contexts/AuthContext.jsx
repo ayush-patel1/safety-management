@@ -6,7 +6,7 @@ import React from "react"
 const AuthContext = createContext()
 
 
-const API_BASE_URL = import.meta.env.REACT_APP_API_URL
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_URL
 axios.defaults.baseURL = API_BASE_URL
 
 export const useAuth = () => {
