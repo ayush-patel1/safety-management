@@ -22,6 +22,7 @@ app.use(cors({
   origin: "https://safety-management-f.onrender.com",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],  
+  credentials: true,
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
