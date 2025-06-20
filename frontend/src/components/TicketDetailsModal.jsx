@@ -1,27 +1,26 @@
 "use client"
-import React from "react"
+
 import { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { useAuth } from "../contexts/AuthContext"
 import { X, Paperclip, Calendar, User, Clock } from "lucide-react"
 
-const TicketDetailsModal = ({ ticket, onClose }) => {
-  const { addTicketComment, getMachineById, getUserById } = useData()
+const TicketDetailsModal = ({ ticket, onClose, onUpdate }) => {
+  const { addTicketComment } = useData()
   const { user } = useAuth()
   const [newComment, setNewComment] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const machine = getMachineById(ticket.machineId)
-  const reportedBy = getUserById(ticket.reportedBy)
-  const assignedTo = getUserById(ticket.assignedTo)
 
   const handleAddComment = async (e) => {
     e.preventDefault()
     if (newComment.trim()) {
       setLoading(true)
       try {
-        await addTicketComment(ticket.id, newComment, user.id)
+        await addTicketComment(ticket._id, newComment)
         setNewComment("")
+        onUpdate()
+      } catch (error) {
+        // Error is handled in the context
       } finally {
         setLoading(false)
       }
@@ -84,20 +83,15 @@ const TicketDetailsModal = ({ ticket, onClose }) => {
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-4">Comments ({ticket.comments?.length || 0})</h4>
                   <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {ticket.comments?.map((comment) => {
-                      const commentUser = getUserById(comment.userId)
-                      return (
-                        <div key={comment.id} className="bg-gray-50 p-3 rounded-md">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-900">{commentUser?.name}</span>
-                            <span className="text-xs text-gray-500">
-                              {new Date(comment.timestamp).toLocaleString()}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-700">{comment.comment}</p>
+                    {ticket.comments?.map((comment) => (
+                      <div key={comment._id} className="bg-gray-50 p-3 rounded-md">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-gray-900">{comment.user?.name}</span>
+                          <span className="text-xs text-gray-500">{new Date(comment.timestamp).toLocaleString()}</span>
                         </div>
-                      )
-                    })}
+                        <p className="text-sm text-gray-700">{comment.comment}</p>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Add Comment */}
@@ -153,19 +147,19 @@ const TicketDetailsModal = ({ ticket, onClose }) => {
                   <div className="space-y-2">
                     <div>
                       <span className="text-sm text-gray-500">Name:</span>
-                      <p className="text-sm font-medium">{machine?.name}</p>
+                      <p className="text-sm font-medium">{ticket.machine?.name}</p>
                     </div>
                     <div>
                       <span className="text-sm text-gray-500">ID:</span>
-                      <p className="text-sm font-medium">{machine?.machineId}</p>
+                      <p className="text-sm font-medium">{ticket.machine?.machineId}</p>
                     </div>
                     <div>
                       <span className="text-sm text-gray-500">Department:</span>
-                      <p className="text-sm font-medium">{machine?.department}</p>
+                      <p className="text-sm font-medium">{ticket.machine?.department}</p>
                     </div>
                     <div>
                       <span className="text-sm text-gray-500">Location:</span>
-                      <p className="text-sm font-medium">{machine?.location}</p>
+                      <p className="text-sm font-medium">{ticket.machine?.location}</p>
                     </div>
                   </div>
                 </div>
@@ -178,14 +172,14 @@ const TicketDetailsModal = ({ ticket, onClose }) => {
                       <User className="h-4 w-4 text-gray-400 mr-2" />
                       <div>
                         <p className="text-sm text-gray-500">Reported by</p>
-                        <p className="text-sm font-medium">{reportedBy?.name}</p>
+                        <p className="text-sm font-medium">{ticket.reportedBy?.name}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <User className="h-4 w-4 text-gray-400 mr-2" />
                       <div>
                         <p className="text-sm text-gray-500">Assigned to</p>
-                        <p className="text-sm font-medium">{assignedTo?.name || "Unassigned"}</p>
+                        <p className="text-sm font-medium">{ticket.assignedTo?.name || "Unassigned"}</p>
                       </div>
                     </div>
                   </div>

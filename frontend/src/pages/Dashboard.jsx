@@ -1,13 +1,22 @@
-import { useData } from "../contexts/DataContext"
+import { useApi } from "../hooks/useApi"
 import { Settings, AlertTriangle, Wrench, Calendar, TrendingUp, TrendingDown, Activity } from "lucide-react"
-import React from "react"
+import LoadingSpinner from "../components/LoadingSpinner"
+
 const Dashboard = () => {
-  const { analytics, tickets, incidents, machines } = useData()
+  const { data: dashboardData, loading: dashboardLoading } = useApi("/api/analytics/dashboard")
+  const { data: recentTickets } = useApi("/api/tickets?limit=5", {
+    transform: (data) => data.tickets || [],
+  })
+  const { data: recentIncidents } = useApi("/api/incidents?limit=5", {
+    transform: (data) => data.incidents || [],
+  })
+
+  if (dashboardLoading) return <LoadingSpinner />
 
   const stats = [
     {
       name: "Total Machines",
-      value: analytics.dashboard.machines.total,
+      value: dashboardData?.machines?.total || 0,
       icon: Settings,
       color: "blue",
       change: "+2.1%",
@@ -15,7 +24,7 @@ const Dashboard = () => {
     },
     {
       name: "Running Machines",
-      value: analytics.dashboard.machines.running,
+      value: dashboardData?.machines?.running || 0,
       icon: Activity,
       color: "green",
       change: "+5.4%",
@@ -23,7 +32,7 @@ const Dashboard = () => {
     },
     {
       name: "Down Machines",
-      value: analytics.dashboard.machines.down,
+      value: dashboardData?.machines?.down || 0,
       icon: AlertTriangle,
       color: "red",
       change: "-2.1%",
@@ -31,16 +40,13 @@ const Dashboard = () => {
     },
     {
       name: "Open Tickets",
-      value: analytics.dashboard.tickets.open,
+      value: dashboardData?.tickets?.open || 0,
       icon: Wrench,
       color: "yellow",
       change: "+1.2%",
       changeType: "increase",
     },
   ]
-
-  const recentTickets = tickets.slice(0, 5)
-  const recentIncidents = incidents.slice(0, 5)
 
   return (
     <div className="space-y-6">
@@ -91,28 +97,21 @@ const Dashboard = () => {
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
                 <span className="text-sm text-gray-600">Running</span>
               </div>
-              <span className="text-sm font-medium">{analytics.dashboard.machines.running}</span>
+              <span className="text-sm font-medium">{dashboardData?.machines?.running || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
                 <span className="text-sm text-gray-600">Down</span>
               </div>
-              <span className="text-sm font-medium">{analytics.dashboard.machines.down}</span>
+              <span className="text-sm font-medium">{dashboardData?.machines?.down || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
                 <span className="text-sm text-gray-600">Maintenance</span>
               </div>
-              <span className="text-sm font-medium">{analytics.dashboard.machines.maintenance}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-gray-500 rounded-full mr-3"></div>
-                <span className="text-sm text-gray-600">Idle</span>
-              </div>
-              <span className="text-sm font-medium">{analytics.dashboard.machines.idle}</span>
+              <span className="text-sm font-medium">{dashboardData?.machines?.maintenance || 0}</span>
             </div>
           </div>
         </div>
@@ -141,11 +140,11 @@ const Dashboard = () => {
         <div className="card p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Tickets</h3>
           <div className="space-y-3">
-            {recentTickets.map((ticket) => (
-              <div key={ticket.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+            {recentTickets?.map((ticket) => (
+              <div key={ticket._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                 <div>
                   <p className="text-sm font-medium text-gray-900">{ticket.title}</p>
-                  <p className="text-xs text-gray-500">{ticket.ticketNumber}</p>
+                  <p className="text-xs text-gray-500">{ticket.machine?.name}</p>
                 </div>
                 <span
                   className={`px-2 py-1 text-xs rounded-full ${
@@ -168,8 +167,8 @@ const Dashboard = () => {
         <div className="card p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Incidents</h3>
           <div className="space-y-3">
-            {recentIncidents.map((incident) => (
-              <div key={incident.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+            {recentIncidents?.map((incident) => (
+              <div key={incident._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                 <div>
                   <p className="text-sm font-medium text-gray-900">{incident.title}</p>
                   <p className="text-xs text-gray-500">{incident.type}</p>

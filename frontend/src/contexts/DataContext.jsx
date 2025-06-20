@@ -1,17 +1,13 @@
+"use client"
 
-import React from "react"
-import { createContext, useContext, useState } from "react"
-import {
-  mockMachines,
-  mockTickets,
-  mockIncidents,
-  mockMaintenanceSchedules,
-  mockUsers,
-  mockAnalytics,
-} from "../data/mockData"
+import { createContext, useContext } from "react"
+import axios from "axios"
 import toast from "react-hot-toast"
 
 const DataContext = createContext()
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+axios.defaults.baseURL = API_BASE_URL
 
 export const useData = () => {
   const context = useContext(DataContext)
@@ -22,307 +18,251 @@ export const useData = () => {
 }
 
 export const DataProvider = ({ children }) => {
-  const [machines, setMachines] = useState(mockMachines)
-  const [tickets, setTickets] = useState(mockTickets)
-  const [incidents, setIncidents] = useState(mockIncidents)
-  const [maintenanceSchedules, setMaintenanceSchedules] = useState(mockMaintenanceSchedules)
-  const [users] = useState(mockUsers)
-  const [analytics] = useState(mockAnalytics)
-
-  // Helper function to generate unique IDs
-  const generateId = () => String(Date.now() + Math.random())
-
-  // Helper function to generate ticket numbers
-  const generateTicketNumber = () => {
-    const count = tickets.length + 1
-    return `TKT-${String(count).padStart(6, "0")}`
-  }
-
-  // Helper function to generate incident numbers
-  const generateIncidentNumber = () => {
-    const count = incidents.length + 1
-    return `INC-${String(count).padStart(6, "0")}`
-  }
-
   // Machine operations
-  const createMachine = (machineData) => {
-    const newMachine = {
-      id: generateId(),
-      ...machineData,
-      status: "Idle",
-      operatingHours: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  const createMachine = async (machineData) => {
+    try {
+      const response = await axios.post("/api/machines", machineData)
+      toast.success("Machine created successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create machine")
+      throw error
     }
-    setMachines((prev) => [...prev, newMachine])
-    toast.success("Machine created successfully!")
-    return newMachine
   }
 
-  const updateMachine = (id, updates) => {
-    setMachines((prev) =>
-      prev.map((machine) =>
-        machine.id === id
-          ? {
-              ...machine,
-              ...updates,
-              updatedAt: new Date().toISOString(),
-            }
-          : machine,
-      ),
-    )
-    toast.success("Machine updated successfully!")
+  const updateMachine = async (id, updates) => {
+    try {
+      const response = await axios.put(`/api/machines/${id}`, updates)
+      toast.success("Machine updated successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update machine")
+      throw error
+    }
   }
 
-  const deleteMachine = (id) => {
-    setMachines((prev) => prev.filter((machine) => machine.id !== id))
-    toast.success("Machine deleted successfully!")
+  const deleteMachine = async (id) => {
+    try {
+      await axios.delete(`/api/machines/${id}`)
+      toast.success("Machine deleted successfully!")
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete machine")
+      throw error
+    }
+  }
+
+  const updateMachineStatus = async (id, status) => {
+    try {
+      const response = await axios.patch(`/api/machines/${id}/status`, { status })
+      toast.success("Machine status updated!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update machine status")
+      throw error
+    }
   }
 
   // Ticket operations
-  const createTicket = (ticketData) => {
-    const newTicket = {
-      id: generateId(),
-      ticketNumber: generateTicketNumber(),
-      ...ticketData,
-      status: "Pending",
-      comments: [],
-      attachments: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  const createTicket = async (ticketData) => {
+    try {
+      const response = await axios.post("/api/tickets", ticketData)
+      toast.success("Ticket created successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create ticket")
+      throw error
     }
-    setTickets((prev) => [...prev, newTicket])
-    toast.success("Ticket created successfully!")
-    return newTicket
   }
 
-  const updateTicket = (id, updates) => {
-    setTickets((prev) =>
-      prev.map((ticket) =>
-        ticket.id === id
-          ? {
-              ...ticket,
-              ...updates,
-              updatedAt: new Date().toISOString(),
-            }
-          : ticket,
-      ),
-    )
-    toast.success("Ticket updated successfully!")
+  const updateTicket = async (id, updates) => {
+    try {
+      const response = await axios.put(`/api/tickets/${id}`, updates)
+      toast.success("Ticket updated successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update ticket")
+      throw error
+    }
   }
 
-  const addTicketComment = (ticketId, comment, userId) => {
-    const newComment = {
-      id: generateId(),
-      userId,
-      comment,
-      timestamp: new Date().toISOString(),
+  const addTicketComment = async (ticketId, comment) => {
+    try {
+      const response = await axios.post(`/api/tickets/${ticketId}/comments`, { comment })
+      toast.success("Comment added successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to add comment")
+      throw error
     }
+  }
 
-    setTickets((prev) =>
-      prev.map((ticket) =>
-        ticket.id === ticketId
-          ? {
-              ...ticket,
-              comments: [...ticket.comments, newComment],
-              updatedAt: new Date().toISOString(),
-            }
-          : ticket,
-      ),
-    )
-    toast.success("Comment added successfully!")
+  const uploadTicketAttachment = async (ticketId, file) => {
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await axios.post(`/api/tickets/${ticketId}/attachments`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      toast.success("File uploaded successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload file")
+      throw error
+    }
   }
 
   // Incident operations
-  const createIncident = (incidentData) => {
-    const newIncident = {
-      id: generateId(),
-      incidentNumber: generateIncidentNumber(),
-      ...incidentData,
-      status: "Open",
-      correctiveActions: incidentData.correctiveActions || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  const createIncident = async (incidentData) => {
+    try {
+      const response = await axios.post("/api/incidents", incidentData)
+      toast.success("Incident reported successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to report incident")
+      throw error
     }
-    setIncidents((prev) => [...prev, newIncident])
-    toast.success("Incident reported successfully!")
-    return newIncident
   }
 
-  const updateIncident = (id, updates) => {
-    setIncidents((prev) =>
-      prev.map((incident) =>
-        incident.id === id
-          ? {
-              ...incident,
-              ...updates,
-              updatedAt: new Date().toISOString(),
-            }
-          : incident,
-      ),
-    )
-    toast.success("Incident updated successfully!")
+  const updateIncident = async (id, updates) => {
+    try {
+      const response = await axios.put(`/api/incidents/${id}`, updates)
+      toast.success("Incident updated successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update incident")
+      throw error
+    }
+  }
+
+  const uploadIncidentAttachment = async (incidentId, file) => {
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await axios.post(`/api/incidents/${incidentId}/attachments`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      toast.success("File uploaded successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload file")
+      throw error
+    }
   }
 
   // Maintenance operations
-  const createMaintenanceSchedule = (scheduleData) => {
-    const newSchedule = {
-      id: generateId(),
-      ...scheduleData,
-      status: "Scheduled",
-      checklist: scheduleData.checklist || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  const createMaintenanceSchedule = async (scheduleData) => {
+    try {
+      const response = await axios.post("/api/maintenance", scheduleData)
+      toast.success("Maintenance scheduled successfully!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to schedule maintenance")
+      throw error
     }
-    setMaintenanceSchedules((prev) => [...prev, newSchedule])
-    toast.success("Maintenance scheduled successfully!")
-    return newSchedule
   }
 
-  const updateMaintenanceSchedule = (id, updates) => {
-    setMaintenanceSchedules((prev) =>
-      prev.map((schedule) =>
-        schedule.id === id
-          ? {
-              ...schedule,
-              ...updates,
-              updatedAt: new Date().toISOString(),
-            }
-          : schedule,
-      ),
-    )
-    toast.success("Maintenance schedule updated!")
+  const updateMaintenanceSchedule = async (id, updates) => {
+    try {
+      const response = await axios.put(`/api/maintenance/${id}`, updates)
+      toast.success("Maintenance schedule updated!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update maintenance schedule")
+      throw error
+    }
   }
 
-  const updateChecklistItem = (scheduleId, itemIndex, updates) => {
-    setMaintenanceSchedules((prev) =>
-      prev.map((schedule) => {
-        if (schedule.id === scheduleId) {
-          const newChecklist = [...schedule.checklist]
-          newChecklist[itemIndex] = { ...newChecklist[itemIndex], ...updates }
-          return {
-            ...schedule,
-            checklist: newChecklist,
-            updatedAt: new Date().toISOString(),
-          }
-        }
-        return schedule
-      }),
-    )
-    toast.success("Checklist updated!")
+  const updateChecklistItem = async (scheduleId, itemIndex, updates) => {
+    try {
+      const response = await axios.patch(`/api/maintenance/${scheduleId}/checklist/${itemIndex}`, updates)
+      toast.success("Checklist updated!")
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update checklist")
+      throw error
+    }
   }
 
-  // Helper functions to get related data
-  const getMachineById = (id) => machines.find((machine) => machine.id === id)
-  const getUserById = (id) => users.find((user) => user.id === id)
-  const getTicketById = (id) => tickets.find((ticket) => ticket.id === id)
-  const getIncidentById = (id) => incidents.find((incident) => incident.id === id)
-  const getMaintenanceById = (id) => maintenanceSchedules.find((schedule) => schedule.id === id)
+  // File upload operations
+  const uploadFile = async (file) => {
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
 
-  // Filter functions
-  const filterMachines = (filters) => {
-    return machines.filter((machine) => {
-      if (filters.department && machine.department !== filters.department) return false
-      if (filters.status && machine.status !== filters.status) return false
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase()
-        return (
-          machine.name.toLowerCase().includes(searchLower) ||
-          machine.machineId.toLowerCase().includes(searchLower) ||
-          machine.location.toLowerCase().includes(searchLower)
-        )
-      }
-      return true
-    })
+      const response = await axios.post("/api/upload/single", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload file")
+      throw error
+    }
   }
 
-  const filterTickets = (filters) => {
-    return tickets.filter((ticket) => {
-      if (filters.status && ticket.status !== filters.status) return false
-      if (filters.priority && ticket.priority !== filters.priority) return false
-      if (filters.assignedTo && ticket.assignedTo !== filters.assignedTo) return false
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase()
-        return (
-          ticket.title.toLowerCase().includes(searchLower) || ticket.ticketNumber.toLowerCase().includes(searchLower)
-        )
-      }
-      return true
-    })
+  const uploadMultipleFiles = async (files) => {
+    try {
+      const formData = new FormData()
+      files.forEach((file) => {
+        formData.append("files", file)
+      })
+
+      const response = await axios.post("/api/upload/multiple", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      return response.data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload files")
+      throw error
+    }
   }
 
-  const filterIncidents = (filters) => {
-    return incidents.filter((incident) => {
-      if (filters.type && incident.type !== filters.type) return false
-      if (filters.severity && incident.severity !== filters.severity) return false
-      if (filters.status && incident.status !== filters.status) return false
-      if (filters.department && incident.department !== filters.department) return false
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase()
-        return (
-          incident.title.toLowerCase().includes(searchLower) ||
-          incident.incidentNumber.toLowerCase().includes(searchLower)
-        )
-      }
-      return true
-    })
-  }
-
-  const filterMaintenanceSchedules = (filters) => {
-    return maintenanceSchedules.filter((schedule) => {
-      if (filters.status && schedule.status !== filters.status) return false
-      if (filters.machineId && schedule.machineId !== filters.machineId) return false
-      if (filters.assignedTo && schedule.assignedTo !== filters.assignedTo) return false
-      if (filters.startDate && filters.endDate) {
-        const scheduleDate = new Date(schedule.scheduledDate)
-        const start = new Date(filters.startDate)
-        const end = new Date(filters.endDate)
-        return scheduleDate >= start && scheduleDate <= end
-      }
-      return true
-    })
+  const deleteFile = async (publicId) => {
+    try {
+      await axios.delete(`/api/upload/${publicId}`)
+      toast.success("File deleted successfully!")
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete file")
+      throw error
+    }
   }
 
   const value = {
-    // Data
-    machines,
-    tickets,
-    incidents,
-    maintenanceSchedules,
-    users,
-    analytics,
-
     // Machine operations
     createMachine,
     updateMachine,
     deleteMachine,
+    updateMachineStatus,
 
     // Ticket operations
     createTicket,
     updateTicket,
     addTicketComment,
+    uploadTicketAttachment,
 
     // Incident operations
     createIncident,
     updateIncident,
+    uploadIncidentAttachment,
 
     // Maintenance operations
     createMaintenanceSchedule,
     updateMaintenanceSchedule,
     updateChecklistItem,
 
-    // Helper functions
-    getMachineById,
-    getUserById,
-    getTicketById,
-    getIncidentById,
-    getMaintenanceById,
-
-    // Filter functions
-    filterMachines,
-    filterTickets,
-    filterIncidents,
-    filterMaintenanceSchedules,
+    // File operations
+    uploadFile,
+    uploadMultipleFiles,
+    deleteFile,
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

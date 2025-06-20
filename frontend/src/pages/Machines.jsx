@@ -1,23 +1,34 @@
 "use client"
-import React from "react"
+
 import { useState } from "react"
+import { usePaginatedApi } from "../hooks/useApi"
 import { useData } from "../contexts/DataContext"
 import { Search, Filter, Plus, Settings, AlertTriangle } from "lucide-react"
+import LoadingSpinner from "../components/LoadingSpinner"
 import CreateMachineModal from "../components/CreateMachineModal"
 
 const Machines = () => {
-  const { filterMachines } = useData()
   const [filters, setFilters] = useState({
     department: "",
     status: "",
     search: "",
   })
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const { updateMachineStatus } = useData()
 
-  const machines = filterMachines(filters)
+  const { data: machines, loading, refetch } = usePaginatedApi("/api/machines", { filters })
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const handleStatusChange = async (machineId, newStatus) => {
+    try {
+      await updateMachineStatus(machineId, newStatus)
+      refetch()
+    } catch (error) {
+      // Error is handled in the context
+    }
   }
 
   const getStatusColor = (status) => {
@@ -45,6 +56,8 @@ const Machines = () => {
         return <div className="w-2 h-2 bg-gray-500 rounded-full" />
     }
   }
+
+  if (loading) return <LoadingSpinner />
 
   return (
     <div className="space-y-6">
@@ -104,7 +117,7 @@ const Machines = () => {
       {/* Machines Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {machines?.map((machine) => (
-          <div key={machine.id} className="card p-6 hover:shadow-lg transition-shadow">
+          <div key={machine._id} className="card p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{machine.name}</h3>
@@ -112,9 +125,16 @@ const Machines = () => {
               </div>
               <div className="flex items-center space-x-2">
                 {getStatusIcon(machine.status)}
-                <span className={`px-2 py-1 text-xs rounded-full border ${getStatusColor(machine.status)}`}>
-                  {machine.status}
-                </span>
+                <select
+                  className={`px-2 py-1 text-xs rounded-full border ${getStatusColor(machine.status)}`}
+                  value={machine.status}
+                  onChange={(e) => handleStatusChange(machine._id, e.target.value)}
+                >
+                  <option value="Running">Running</option>
+                  <option value="Down">Down</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Idle">Idle</option>
+                </select>
               </div>
             </div>
 
@@ -160,7 +180,15 @@ const Machines = () => {
       )}
 
       {/* Modals */}
-      {showCreateModal && <CreateMachineModal onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && (
+        <CreateMachineModal
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={() => {
+            setShowCreateModal(false)
+            refetch()
+          }}
+        />
+      )}
     </div>
   )
 }

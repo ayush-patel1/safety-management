@@ -1,28 +1,35 @@
-"use client"
-import React, { useState } from "react"
+import { useState } from "react"
+import { usePaginatedApi } from "../hooks/useApi"
 import { useData } from "../contexts/DataContext"
 import { Search, Filter, Plus, Eye, AlertTriangle, Calendar, FileText } from "lucide-react"
+import LoadingSpinner from "../components/LoadingSpinner"
 import CreateIncidentModal from "../components/CreateIncidentModal"
 
 const Incidents = () => {
-  const { filterIncidents, updateIncident } = useData()
   const [filters, setFilters] = useState({
     type: "",
     severity: "",
     status: "",
     search: "",
+    page: 1,
   })
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [selectedIncident, setSelectedIncident] = useState(null)
+  const { updateIncident } = useData()
 
-  const incidents = filterIncidents(filters)
+  const { data: incidents, loading, pagination, refetch } = usePaginatedApi("/api/incidents", { filters })
 
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
+    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }))
   }
 
-  const handleStatusChange = (incidentId, newStatus) => {
-    updateIncident(incidentId, { status: newStatus })
+  const handleStatusChange = async (incidentId, newStatus) => {
+    try {
+      await updateIncident(incidentId, { status: newStatus })
+      refetch()
+    } catch (error) {
+      // Error is handled in the context
+    }
   }
 
   const getSeverityColor = (severity) => {
@@ -68,14 +75,18 @@ const Incidents = () => {
     }
   }
 
-  const openIncidents = incidents.filter((i) => i.status === "Open").length
-  const underInvestigation = incidents.filter((i) => i.status === "Under Investigation").length
-  const criticalSeverity = incidents.filter((i) => i.severity === "Critical").length
-  const thisMonth = incidents.filter((i) => {
-    const incidentDate = new Date(i.incidentDate)
-    const now = new Date()
-    return incidentDate.getMonth() === now.getMonth() && incidentDate.getFullYear() === now.getFullYear()
-  }).length
+  if (loading) return <LoadingSpinner />
+
+  // Calculate stats
+  const openIncidents = incidents?.filter((i) => i.status === "Open").length || 0
+  const underInvestigation = incidents?.filter((i) => i.status === "Under Investigation").length || 0
+  const criticalSeverity = incidents?.filter((i) => i.severity === "Critical").length || 0
+  const thisMonth =
+    incidents?.filter((i) => {
+      const incidentDate = new Date(i.incidentDate)
+      const now = new Date()
+      return incidentDate.getMonth() === now.getMonth() && incidentDate.getFullYear() === now.getFullYear()
+    }).length || 0
 
   return (
     <div className="space-y-6">
@@ -190,7 +201,7 @@ const Incidents = () => {
       {/* Incidents Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {incidents?.map((incident) => (
-          <div key={incident.id} className="card p-6 hover:shadow-lg transition-shadow">
+          <div key={incident._id} className="card p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center">
                 <span className="text-2xl mr-3">{getTypeIcon(incident.type)}</span>
@@ -240,7 +251,7 @@ const Incidents = () => {
                 <select
                   className={`text-xs rounded px-2 py-1 border-0 ${getStatusColor(incident.status)}`}
                   value={incident.status}
-                  onChange={(e) => handleStatusChange(incident.id, e.target.value)}
+                  onChange={(e) => handleStatusChange(incident._id, e.target.value)}
                 >
                   <option value="Open">Open</option>
                   <option value="Under Investigation">Under Investigation</option>
@@ -251,6 +262,31 @@ const Incidents = () => {
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {pagination?.totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Showing page {pagination.currentPage} of {pagination.totalPages}
+          </div>
+          <div className="flex space-x-2">
+            <button
+              className="btn btn-secondary"
+              disabled={pagination.currentPage === 1}
+              onClick={() => handleFilterChange("page", filters.page - 1)}
+            >
+              Previous
+            </button>
+            <button
+              className="btn btn-secondary"
+              disabled={pagination.currentPage === pagination.totalPages}
+              onClick={() => handleFilterChange("page", filters.page + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       {incidents?.length === 0 && (
         <div className="text-center py-12">
@@ -267,23 +303,14 @@ const Incidents = () => {
       )}
 
       {/* Modals */}
-      {showCreateModal && <CreateIncidentModal onClose={() => setShowCreateModal(false)} />}
-
-      {/* View Details Modal */}
-      {selectedIncident && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{selectedIncident.title}</h2>
-            <p className="mb-2"><strong>Type:</strong> {selectedIncident.type}</p>
-            <p className="mb-2"><strong>Severity:</strong> {selectedIncident.severity}</p>
-            <p className="mb-2"><strong>Status:</strong> {selectedIncident.status}</p>
-            <p className="mb-2"><strong>Description:</strong> {selectedIncident.description}</p>
-            <p className="mb-2"><strong>Location:</strong> {selectedIncident.location}</p>
-            <p className="mb-2"><strong>Department:</strong> {selectedIncident.department}</p>
-            <p className="mb-4"><strong>Date:</strong> {new Date(selectedIncident.incidentDate).toLocaleDateString()}</p>
-            <button className="btn btn-secondary" onClick={() => setSelectedIncident(null)}>Close</button>
-          </div>
-        </div>
+      {showCreateModal && (
+        <CreateIncidentModal
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={() => {
+            setShowCreateModal(false)
+            refetch()
+          }}
+        />
       )}
     </div>
   )

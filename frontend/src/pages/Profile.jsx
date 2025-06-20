@@ -1,12 +1,13 @@
 "use client"
-import React from "react"
+
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { User, Mail, Phone, Building, Shield, Edit, Save, X } from "lucide-react"
+import axios from "axios"
 import toast from "react-hot-toast"
 
 const Profile = () => {
-  const { user } = useAuth()
+  const { user, fetchUser } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -14,6 +15,7 @@ const Profile = () => {
     phone: user?.phone || "",
     department: user?.department || "",
   })
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData({
@@ -22,10 +24,24 @@ const Profile = () => {
     })
   }
 
-  const handleSave = () => {
-    // Here you would typically make an API call to update the user profile
-    toast.success("Profile updated successfully!")
-    setIsEditing(false)
+  const handleSave = async () => {
+    setLoading(true)
+    try {
+      const token = localStorage.getItem("token")
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/auth/profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      toast.success("Profile updated successfully!")
+      setIsEditing(false)
+      // Refresh user data
+      if (fetchUser) fetchUser()
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleCancel = () => {
@@ -36,6 +52,11 @@ const Profile = () => {
       department: user?.department || "",
     })
     setIsEditing(false)
+  }
+
+  const handleChangePassword = async () => {
+    // This would typically open a modal or navigate to a change password page
+    toast.info("Change password functionality would be implemented here")
   }
 
   const getRoleDisplayName = (role) => {
@@ -92,6 +113,7 @@ const Profile = () => {
           <button
             onClick={() => setIsEditing(!isEditing)}
             className={`btn ${isEditing ? "btn-secondary" : "btn-primary"}`}
+            disabled={loading}
           >
             {isEditing ? (
               <>
@@ -115,7 +137,14 @@ const Profile = () => {
                 Full Name
               </label>
               {isEditing ? (
-                <input type="text" name="name" className="input" value={formData.name} onChange={handleChange} />
+                <input
+                  type="text"
+                  name="name"
+                  className="input"
+                  value={formData.name}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
               ) : (
                 <p className="text-gray-900">{user?.name}</p>
               )}
@@ -127,7 +156,14 @@ const Profile = () => {
                 Email Address
               </label>
               {isEditing ? (
-                <input type="email" name="email" className="input" value={formData.email} onChange={handleChange} />
+                <input
+                  type="email"
+                  name="email"
+                  className="input"
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
               ) : (
                 <p className="text-gray-900">{user?.email}</p>
               )}
@@ -141,7 +177,14 @@ const Profile = () => {
                 Phone Number
               </label>
               {isEditing ? (
-                <input type="tel" name="phone" className="input" value={formData.phone} onChange={handleChange} />
+                <input
+                  type="tel"
+                  name="phone"
+                  className="input"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
               ) : (
                 <p className="text-gray-900">{user?.phone || "Not provided"}</p>
               )}
@@ -153,15 +196,24 @@ const Profile = () => {
                 Department
               </label>
               {isEditing ? (
-                <select name="department" className="select" value={formData.department} onChange={handleChange}>
+                <select
+                  name="department"
+                  className="select"
+                  value={formData.department}
+                  onChange={handleChange}
+                  disabled={loading}
+                >
+                  <option value="">Select Department</option>
                   <option value="Rolling Mill">Rolling Mill</option>
                   <option value="Smelting">Smelting</option>
                   <option value="Casting">Casting</option>
                   <option value="Quality Control">Quality Control</option>
                   <option value="Maintenance">Maintenance</option>
+                  <option value="Safety">Safety</option>
+                  <option value="Operations">Operations</option>
                 </select>
               ) : (
-                <p className="text-gray-900">{user?.department}</p>
+                <p className="text-gray-900">{user?.department || "Not specified"}</p>
               )}
             </div>
           </div>
@@ -169,12 +221,12 @@ const Profile = () => {
 
         {isEditing && (
           <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
-            <button onClick={handleCancel} className="btn btn-secondary">
+            <button onClick={handleCancel} className="btn btn-secondary" disabled={loading}>
               Cancel
             </button>
-            <button onClick={handleSave} className="btn btn-primary">
+            <button onClick={handleSave} className="btn btn-primary" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
-              Save Changes
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         )}
@@ -237,10 +289,12 @@ const Profile = () => {
       <div className="card p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Account Settings</h3>
         <div className="space-y-4">
-          <button className="btn btn-secondary w-full md:w-auto">Change Password</button>
+          <button onClick={handleChangePassword} className="btn btn-secondary w-full md:w-auto">
+            Change Password
+          </button>
           <div className="text-sm text-gray-600">
-            <p>Last login: {new Date().toLocaleDateString()}</p>
-            <p>Account created: {new Date().toLocaleDateString()}</p>
+            <p>Last login: {user?.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : "N/A"}</p>
+            <p>Account created: {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
-import React from "react"
+"use client"
+
 import { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { X } from "lucide-react"
 
-const CreateMachineModal = ({ onClose }) => {
+const CreateMachineModal = ({ onClose, onSuccess }) => {
   const { createMachine } = useData()
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +29,9 @@ const CreateMachineModal = ({ onClose }) => {
 
     try {
       await createMachine(formData)
-      onClose()
+      onSuccess()
+    } catch (error) {
+      // Error is handled in the context
     } finally {
       setLoading(false)
     }

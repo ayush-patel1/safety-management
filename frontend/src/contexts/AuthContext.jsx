@@ -1,9 +1,14 @@
-import React from "react"
+"use client"
+
 import { createContext, useContext, useState, useEffect } from "react"
-import { mockUsers } from "../data/mockData"
+import axios from "axios"
 import toast from "react-hot-toast"
 
 const AuthContext = createContext()
+
+// Set up axios defaults
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
+axios.defaults.baseURL = API_BASE_URL
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -18,87 +23,67 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem("imsp_user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    const token = localStorage.getItem("token")
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      fetchUser()
+    } else {
+      setLoading(false)
     }
-    setLoading(false)
   }, [])
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("/api/auth/me")
+      setUser(response.data.user)
+    } catch (error) {
+      localStorage.removeItem("token")
+      delete axios.defaults.headers.common["Authorization"]
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const login = async (email, password) => {
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await axios.post("/api/auth/login", { email, password })
+      const { token, user } = response.data
 
-      const foundUser = mockUsers.find((u) => u.email === email && u.password === password)
+      localStorage.setItem("token", token)
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      setUser(user)
 
-      if (!foundUser) {
-        toast.error("Invalid credentials")
-        return { success: false, message: "Invalid credentials" }
-      }
-
-      const userSession = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
-        role: foundUser.role,
-        department: foundUser.department,
-        phone: foundUser.phone,
-      }
-
-      setUser(userSession)
-      localStorage.setItem("imsp_user", JSON.stringify(userSession))
       toast.success("Login successful!")
       return { success: true }
     } catch (error) {
-      toast.error("Login failed")
-      return { success: false, message: "Login failed" }
+      const message = error.response?.data?.message || "Login failed"
+      toast.error(message)
+      return { success: false, message }
     }
   }
 
   const register = async (userData) => {
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await axios.post("/api/auth/register", userData)
+      const { token, user } = response.data
 
-      // Check if user already exists
-      const existingUser = mockUsers.find((u) => u.email === userData.email)
-      if (existingUser) {
-        toast.error("User already exists")
-        return { success: false, message: "User already exists" }
-      }
+      localStorage.setItem("token", token)
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      setUser(user)
 
-      const newUser = {
-        id: String(mockUsers.length + 1),
-        ...userData,
-      }
-
-      // Add to mock users (in real app, this would be sent to backend)
-      mockUsers.push(newUser)
-
-      const userSession = {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        department: newUser.department,
-        phone: newUser.phone,
-      }
-
-      setUser(userSession)
-      localStorage.setItem("imsp_user", JSON.stringify(userSession))
       toast.success("Registration successful!")
       return { success: true }
     } catch (error) {
-      toast.error("Registration failed")
-      return { success: false, message: "Registration failed" }
+      const message = error.response?.data?.message || "Registration failed"
+      toast.error(message)
+      return { success: false, message }
     }
   }
 
   const logout = () => {
+    localStorage.removeItem("token")
+    delete axios.defaults.headers.common["Authorization"]
     setUser(null)
-    localStorage.removeItem("imsp_user")
     toast.success("Logged out successfully")
   }
 

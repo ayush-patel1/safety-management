@@ -1,17 +1,17 @@
-"use client"
-import React from "react"
 import { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { useAuth } from "../contexts/AuthContext"
+import { useApi } from "../hooks/useApi"
 import { X } from "lucide-react"
 
-const CreateTicketModal = ({ onClose }) => {
-  const { createTicket, machines } = useData()
+const CreateTicketModal = ({ onClose, onSuccess }) => {
+  const { createTicket } = useData()
   const { user } = useAuth()
+  const { data: machines } = useApi("/api/machines")
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    machineId: "",
+    machine: "",
     priority: "Medium",
     category: "Mechanical",
     estimatedHours: "",
@@ -25,10 +25,11 @@ const CreateTicketModal = ({ onClose }) => {
     try {
       await createTicket({
         ...formData,
-        reportedBy: user.id,
         estimatedHours: formData.estimatedHours ? Number(formData.estimatedHours) : null,
       })
-      onClose()
+      onSuccess()
+    } catch (error) {
+      // Error is handled in the context
     } finally {
       setLoading(false)
     }
@@ -71,10 +72,10 @@ const CreateTicketModal = ({ onClose }) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Machine</label>
-                <select name="machineId" required className="select" value={formData.machineId} onChange={handleChange}>
+                <select name="machine" required className="select" value={formData.machine} onChange={handleChange}>
                   <option value="">Select a machine</option>
                   {machines?.map((machine) => (
-                    <option key={machine.id} value={machine.id}>
+                    <option key={machine._id} value={machine._id}>
                       {machine.name} ({machine.machineId})
                     </option>
                   ))}

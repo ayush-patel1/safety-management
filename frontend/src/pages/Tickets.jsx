@@ -1,29 +1,39 @@
 "use client"
-import React from "react"
+
 import { useState } from "react"
+import { usePaginatedApi, useApi } from "../hooks/useApi"
 import { useData } from "../contexts/DataContext"
 import { Search, Filter, Plus, Eye, MessageSquare, Paperclip, Calendar, User } from "lucide-react"
+import LoadingSpinner from "../components/LoadingSpinner"
 import CreateTicketModal from "../components/CreateTicketModal"
 import TicketDetailsModal from "../components/TicketDetailsModal"
 
 const Tickets = () => {
-  const { filterTickets, updateTicket, getMachineById, getUserById } = useData()
   const [filters, setFilters] = useState({
     status: "",
     priority: "",
     search: "",
+    page: 1,
   })
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState(null)
+  const { updateTicket } = useData()
 
-  const tickets = filterTickets(filters)
+  const { data: tickets, loading, pagination, refetch } = usePaginatedApi("/api/tickets", { filters })
+
+  const { data: users } = useApi("/api/users")
 
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
+    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }))
   }
 
-  const handleStatusChange = (ticketId, newStatus) => {
-    updateTicket(ticketId, { status: newStatus })
+  const handleStatusChange = async (ticketId, newStatus) => {
+    try {
+      await updateTicket(ticketId, { status: newStatus })
+      refetch()
+    } catch (error) {
+      // Error is handled in the context
+    }
   }
 
   const getPriorityColor = (priority) => {
@@ -51,6 +61,8 @@ const Tickets = () => {
         return "bg-gray-100 text-gray-800"
     }
   }
+
+  if (loading) return <LoadingSpinner />
 
   return (
     <div className="space-y-6">
@@ -137,69 +149,92 @@ const Tickets = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {tickets?.map((ticket) => {
-                const machine = getMachineById(ticket.machineId)
-                const assignedUser = getUserById(ticket.assignedTo)
-                return (
-                  <tr key={ticket.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{ticket.ticketNumber}</div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs">{ticket.title}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{machine?.name}</div>
-                      <div className="text-sm text-gray-500">{machine?.department}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(ticket.priority)}`}>
-                        {ticket.priority}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <select
-                        className={`text-xs rounded-full px-2 py-1 border-0 ${getStatusColor(ticket.status)}`}
-                        value={ticket.status}
-                        onChange={(e) => handleStatusChange(ticket.id, e.target.value)}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Closed">Closed</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-gray-900">{assignedUser?.name || "Unassigned"}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(ticket.createdAt).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <button className="text-blue-600 hover:text-blue-900" onClick={() => setSelectedTicket(ticket)}>
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button className="text-gray-600 hover:text-gray-900">
-                          <MessageSquare className="h-4 w-4" />
-                        </button>
-                        <button className="text-gray-600 hover:text-gray-900">
-                          <Paperclip className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
+              {tickets?.map((ticket) => (
+                <tr key={ticket._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{ticket.ticketNumber}</div>
+                      <div className="text-sm text-gray-500 truncate max-w-xs">{ticket.title}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{ticket.machine?.name}</div>
+                    <div className="text-sm text-gray-500">{ticket.machine?.department}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(ticket.priority)}`}>
+                      {ticket.priority}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <select
+                      className={`text-xs rounded-full px-2 py-1 border-0 ${getStatusColor(ticket.status)}`}
+                      value={ticket.status}
+                      onChange={(e) => handleStatusChange(ticket._id, e.target.value)}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                      <option value="Closed">Closed</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 text-gray-400 mr-2" />
+                      <span className="text-sm text-gray-900">{ticket.assignedTo?.name || "Unassigned"}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {new Date(ticket.createdAt).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex space-x-2">
+                      <button className="text-blue-600 hover:text-blue-900" onClick={() => setSelectedTicket(ticket)}>
+                        <Eye className="h-4 w-4" />
+                      </button>
+                      <button className="text-gray-600 hover:text-gray-900">
+                        <MessageSquare className="h-4 w-4" />
+                      </button>
+                      <button className="text-gray-600 hover:text-gray-900">
+                        <Paperclip className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {pagination?.totalPages > 1 && (
+          <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                Showing page {pagination.currentPage} of {pagination.totalPages}
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  className="btn btn-secondary"
+                  disabled={pagination.currentPage === 1}
+                  onClick={() => handleFilterChange("page", filters.page - 1)}
+                >
+                  Previous
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  onClick={() => handleFilterChange("page", filters.page + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {tickets?.length === 0 && (
@@ -217,8 +252,22 @@ const Tickets = () => {
       )}
 
       {/* Modals */}
-      {showCreateModal && <CreateTicketModal onClose={() => setShowCreateModal(false)} />}
-      {selectedTicket && <TicketDetailsModal ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />}
+      {showCreateModal && (
+        <CreateTicketModal
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={() => {
+            setShowCreateModal(false)
+            refetch()
+          }}
+        />
+      )}
+      {selectedTicket && (
+        <TicketDetailsModal
+          ticket={selectedTicket}
+          onClose={() => setSelectedTicket(null)}
+          onUpdate={() => refetch()}
+        />
+      )}
     </div>
   )
 }

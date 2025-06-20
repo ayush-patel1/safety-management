@@ -1,11 +1,11 @@
 "use client"
-import React from "react"
+
 import { useState } from "react"
 import { useData } from "../contexts/DataContext"
 import { useAuth } from "../contexts/AuthContext"
 import { X, Plus, Minus } from "lucide-react"
 
-const CreateIncidentModal = ({ onClose }) => {
+const CreateIncidentModal = ({ onClose, onSuccess }) => {
   const { createIncident } = useData()
   const { user } = useAuth()
   const [formData, setFormData] = useState({
@@ -29,10 +29,11 @@ const CreateIncidentModal = ({ onClose }) => {
     try {
       await createIncident({
         ...formData,
-        reportedBy: user.id,
         incidentDate: new Date(formData.incidentDate).toISOString(),
       })
-      onClose()
+      onSuccess()
+    } catch (error) {
+      // Error is handled in the context
     } finally {
       setLoading(false)
     }
