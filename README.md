@@ -1,51 +1,61 @@
-# Hindalco Safety & Maintenance Platform
+# 🚧 Hindalco Safety & Maintenance Platform
 
-A full-stack web application for managing machines, tickets, incidents, maintenance schedules, analytics, and user profiles in an industrial environment.
+A powerful full-stack industrial web platform to manage 🏭 machines, 🛠 maintenance, 🧾 tickets, 🚨 incidents, 📊 analytics, and 👥 user roles — built for modern factory safety and efficiency.
 
----
-
-## Screenshots
-
-<!-- Add your images to the `frontend/screenshots/` folder or similar and update the paths below -->
-![Dashboard Screenshot](frontend/ss/Dashboard.png)
-![Analytics Page](frontend/ss/Analytics.png)
-![Sidebar Example](frontend/ss/Machines.png)
+🔗 **Live Demo**: [safety-management-f.onrender.com](https://safety-management-f.onrender.com/)
 
 ---
 
-## Features
+## 📸 Screenshots
 
-- **Authentication:** JWT-based login and registration
-- **Role-based Access:** User roles and permissions
-- **Machine Management:** Add, edit, and view machines
-- **Ticketing System:** Create and track maintenance/service tickets
-- **Incident Reporting:** Log and manage incidents
-- **Maintenance Scheduling:** Preventive, predictive, and corrective maintenance
-- **Analytics Dashboard:** Visualize key metrics with charts (Recharts)
-- **File Uploads:** Cloudinary integration for attachments
-- **Responsive UI:** Built with React, Tailwind CSS, and Lucide icons
+| Dashboard | Analytics | Machine View |
+|:---------:|:---------:|:------------:|
+| ![Dashboard Screenshot](frontend/ss/Dashboard.png) | ![Analytics Page](frontend/ss/Analytics.png) | ![Sidebar Example](frontend/ss/Machines.png) |
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-- **Frontend:** React, Vite, Tailwind CSS, React Router, Recharts, Lucide React
-- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT, Multer, Cloudinary
-- **Other:** dotenv, cors, react-hot-toast
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or v20 recommended)
-- MongoDB (local or Atlas)
-- Cloudinary account (for file uploads)
+- 🔐 **JWT Authentication** – Secure login & registration
+- 🛡 **Role-Based Access** – Users, Admins, and Managers
+- 🏭 **Machine Management** – Add, edit, and monitor machine data
+- 🎫 **Ticketing System** – Raise, track, and close maintenance tickets
+- 🚨 **Incident Reporting** – Log industrial safety incidents
+- 📅 **Maintenance Scheduler** – Preventive, predictive, corrective
+- 📊 **Analytics Dashboard** – Interactive charts using Recharts
+- 📁 **File Uploads** – Integrated with Cloudinary
+- 📱 **Responsive UI** – Built with Tailwind CSS & Lucide icons
 
 ---
 
-### 1. Clone the repository
+## 🧰 Tech Stack
+
+**Frontend:**
+- React + Vite
+- Tailwind CSS, React Router
+- Recharts, Lucide React
+
+**Backend:**
+- Node.js, Express.js
+- MongoDB, Mongoose
+- JWT, Multer, Cloudinary
+
+**Other:**
+- `dotenv`, `cors`, `react-hot-toast`
+
+---
+
+## 🚀 Getting Started
+
+### 🔧 Prerequisites
+
+- Node.js v18 or later
+- MongoDB (Local or Atlas)
+- Cloudinary account (for uploads)
+
+---
+
+### 1️⃣ Clone the Repo
 
 ```bash
 git clone https://github.com/yourusername/imsp.git
@@ -54,122 +64,116 @@ cd imsp
 
 ---
 
-### 2. Backend Setup
+### 2️⃣ Backend Setup
 
 ```bash
 cd backend
 npm install
 ```
 
-- Create a `.env` file in `backend/` (see `.env.example` or below):
+📁 Create a `.env` file:
 
-  ```
-  NODE_ENV=development
-  PORT=5000
-  MONGODB_URI=mongodb://localhost:27017/imsp
-  JWT_SECRET=your-super-secret-jwt-key-here
-  CORS_ORIGIN=http://localhost:5173
+```env
+NODE_ENV=development
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/imsp
+JWT_SECRET=your-super-secret-jwt-key
+CORS_ORIGIN=http://localhost:5173
 
-  # Cloudinary
-  CLOUDINARY_CLOUD_NAME=your-cloud-name
-  CLOUDINARY_API_KEY=your-api-key
-  CLOUDINARY_API_SECRET=your-api-secret
-  ```
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
 
-- Start the backend server:
+▶️ Start server:
 
-  ```bash
-  npm start
-  # or
-  node server.js
-  ```
+```bash
+npm start
+```
 
 ---
 
-### 3. Frontend Setup
+### 3️⃣ Frontend Setup
 
 ```bash
 cd ../frontend
 npm install
+npm run dev
 ```
 
-- Start the frontend dev server:
-
-  ```bash
-  npm run dev
-  ```
-
-- The app will be available at [http://localhost:5173](http://localhost:5173)
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## Scripts
-
-### Backend
-
-- `npm start` — Start the Express server
-
-### Frontend
-
-- `npm run dev` — Start the Vite dev server
-- `npm run build` — Build for production
-
----
-
-## Folder Structure
+## 📁 Folder Structure
 
 ```
 backend/
-  models/
-  routes/
-  middlewares/
-  config/
-  .env
-  server.js
+├── config/
+├── models/
+├── routes/
+├── middlewares/
+├── server.js
+└── .env
 
 frontend/
-  src/
-    components/
-    pages/
-    contexts/
-    assets/
-    App.jsx
-    index.css
-  tailwind.config.js
-  vite.config.js
-  screenshots/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── contexts/
+│   ├── pages/
+│   └── App.jsx
+├── screenshots/
+├── tailwind.config.js
+└── vite.config.js
 ```
 
 ---
 
-## Customization
+## 🛠 Customization
 
-- **Tailwind CSS:** Edit `tailwind.config.js` and `src/index.css` for custom styles.
-- **Cloudinary:** Configure your credentials in `backend/config/cloudinary.js` and `.env`.
-- **Analytics:** Charts are powered by [Recharts](https://recharts.org/).
-
----
-
-## Troubleshooting
-
-- **Tailwind not working?**
-  - Ensure `@tailwind` directives are in `src/index.css`
-  - Check `tailwind.config.js` has `./src/**/*.{js,jsx,ts,tsx}` in `content`
-  - Restart your dev server after changes
-
-- **MongoDB connection issues?**
-  - Make sure MongoDB is running and `MONGODB_URI` is correct
-
-- **Cloudinary upload issues?**
-  - Check your Cloudinary credentials in `.env` and `config/cloudinary.js`
+- 🎨 **Tailwind Config:** Edit `tailwind.config.js` for theme tweaks.
+- ☁️ **Cloudinary:** Setup in `backend/config/cloudinary.js` and `.env`
+- 📊 **Charts:** Powered by [Recharts](https://recharts.org)
 
 ---
 
-## License
+## 🧪 Scripts
 
-MIT
+### Backend
+
+```bash
+npm start       # Run backend
+```
+
+### Frontend
+
+```bash
+npm run dev     # Dev mode
+npm run build   # Production build
+```
 
 ---
+
+## 🧯 Troubleshooting
+
+- **Tailwind not loading?**
+  - Check `@tailwind` in `index.css`
+  - Restart Vite server after updates
+
+- **MongoDB issues?**
+  - Ensure your MongoDB URI is correct and server is running
+
+- **Cloudinary not uploading?**
+  - Double-check credentials in `.env`
+
+---
+
+## ⚖️ License
+
+[MIT](https://choosealicense.com/licenses/mit/) © 2025 IMSP
+
 
 ## Credits
 
