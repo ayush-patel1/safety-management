@@ -176,23 +176,51 @@ Open [http://localhost:5173](http://localhost:5173) in your browser
 \`\`\`
 📁 imsp/
 ├── 📁 backend/
-│   ├── 📁 config/              # Database & service configs
-│   ├── 📁 models/              # MongoDB schemas
-│   ├── 📁 routes/              # API endpoints
-│   ├── 📁 middlewares/         # Auth & validation
-│   ├── 📄 server.js            # Main server file
-│   └── 📄 .env                 # Environment variables
+│   ├── 📁 config/
+│   │   ├── 📄 database.js          # MongoDB connection
+│   │   └── 📄 cloudinary.js        # Cloudinary setup
+│   ├── 📁 models/
+│   │   ├── 📄 User.js              # User schema
+│   │   ├── 📄 Machine.js           # Machine schema
+│   │   ├── 📄 Ticket.js            # Ticket schema
+│   │   └── 📄 Incident.js          # Incident schema
+│   ├── 📁 routes/
+│   │   ├── 📄 auth.js              # Authentication routes
+│   │   ├── 📄 machines.js          # Machine management
+│   │   ├── 📄 tickets.js           # Ticketing system
+│   │   └── 📄 incidents.js         # Incident reporting
+│   ├── 📁 middlewares/
+│   │   ├── 📄 auth.js              # JWT verification
+│   │   └── 📄 upload.js            # File upload handling
+│   ├── 📄 server.js                # Main server file
+│   ├── 📄 package.json             # Backend dependencies
+│   └── 📄 .env                     # Environment variables
 ├── 📁 frontend/
 │   ├── 📁 src/
-│   │   ├── 📁 assets/          # Static assets
-│   │   ├── 📁 components/      # React components
-│   │   ├── 📁 contexts/        # React contexts
-│   │   ├── 📁 pages/           # Page components
-│   │   └── 📄 App.jsx          # Main app component
-│   ├── 📁 screenshots/         # Project screenshots
-│   ├── 📄 tailwind.config.js   # Tailwind configuration
-│   └── 📄 vite.config.js       # Vite configuration
-└── 📄 README.md                # This file
+│   │   ├── 📁 assets/              # Static assets
+│   │   ├── 📁 components/
+│   │   │   ├── 📄 Navbar.jsx       # Navigation component
+│   │   │   ├── 📄 Sidebar.jsx      # Sidebar component
+│   │   │   └── 📄 Charts.jsx       # Chart components
+│   │   ├── 📁 contexts/
+│   │   │   └── 📄 AuthContext.jsx  # Authentication context
+│   │   ├── 📁 pages/
+│   │   │   ├── 📄 Dashboard.jsx    # Main dashboard
+│   │   │   ├── 📄 Machines.jsx     # Machine management
+│   │   │   ├── 📄 Tickets.jsx      # Ticket system
+│   │   │   ├── 📄 Analytics.jsx    # Analytics page
+│   │   │   └── 📄 Login.jsx        # Authentication
+│   │   ├── 📄 App.jsx              # Main app component
+│   │   └── 📄 main.jsx             # Entry point
+│   ├── 📁 ss/                      # Screenshots
+│   │   ├── 🖼️ Dashboard.png
+│   │   ├── 🖼️ Analytics.png
+│   │   └── 🖼️ Machines.png
+│   ├── 📄 index.html               # HTML template
+│   ├── 📄 package.json             # Frontend dependencies
+│   ├── 📄 tailwind.config.js       # Tailwind configuration
+│   └── 📄 vite.config.js           # Vite configuration
+└── 📄 README.md                    # This file
 \`\`\`
 
 ---
@@ -212,15 +240,41 @@ Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ### **Backend Commands**
 \`\`\`bash
-npm start          # Start production server
-npm run dev        # Start development server with nodemon
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+npm install
+
+# Start production server
+npm start
+
+# Start development server with nodemon
+npm run dev
+
+# Run tests
+npm test
 \`\`\`
 
 ### **Frontend Commands**
 \`\`\`bash
-npm run dev        # Start development server
-npm run build      # Create production build
-npm run preview    # Preview production build
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Create production build
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run linting
+npm run lint
 \`\`\`
 
 ---
@@ -311,6 +365,12 @@ Special thanks to these amazing tools and libraries:
 <div align="center">
 
 ### ⭐ **Star this repo if you found it helpful!**
+
+**Made with ❤️ by [Ayush Patel](https://github.com/ayush-patel1)**
+
+*Building safer industrial environments, one line of code at a time* 🏭
+
+</div>
 
 **Made with ❤️ by [Ayush Patel](https://github.com/ayush-patel1)**
 
