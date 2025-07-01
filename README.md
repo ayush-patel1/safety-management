@@ -1,79 +1,147 @@
+<div align="center">
+
 # 🚧 Hindalco Safety & Maintenance Platform
 
-A powerful full-stack industrial web platform to manage 🏭 machines, 🛠 maintenance, 🧾 tickets, 🚨 incidents, 📊 analytics, and 👥 user roles — built for modern factory safety and efficiency.
+### *A powerful full-stack industrial web platform for modern factory safety and efficiency*
+
+**Manage machines • Track maintenance • Handle incidents • Analyze performance**
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
 🔗 **Live Demo**: [safety-management-f.onrender.com](https://safety-management-f.onrender.com/)
 
 ---
 
-## 📸 Screenshots
+</div>
 
-| Dashboard | Analytics | Machine View |
-|:---------:|:---------:|:------------:|
-| ![Dashboard Screenshot](frontend/ss/Dashboard.png) | ![Analytics Page](frontend/ss/Analytics.png) | ![Sidebar Example](frontend/ss/Machines.png) |
+## 📸 **Screenshots**
 
----
+<div align="center">
 
-## ✨ Features
+<table>
+<tr>
+<td align="center" width="33%">
 
-- 🔐 **JWT Authentication** – Secure login & registration
-- 🛡 **Role-Based Access** – Users, Admins, and Managers
-- 🏭 **Machine Management** – Add, edit, and monitor machine data
-- 🎫 **Ticketing System** – Raise, track, and close maintenance tickets
-- 🚨 **Incident Reporting** – Log industrial safety incidents
-- 📅 **Maintenance Scheduler** – Preventive, predictive, corrective
-- 📊 **Analytics Dashboard** – Interactive charts using Recharts
-- 📁 **File Uploads** – Integrated with Cloudinary
-- 📱 **Responsive UI** – Built with Tailwind CSS & Lucide icons
+### 📊 **Dashboard**
+<img src="frontend/ss/Dashboard.png" alt="Dashboard Screenshot" width="280" height="180">
 
----
+</td>
+<td align="center" width="33%">
 
-## 🧰 Tech Stack
+### 📈 **Analytics**
+<img src="frontend/ss/Analytics.png" alt="Analytics Page" width="280" height="180">
 
-**Frontend:**
-- React + Vite
-- Tailwind CSS, React Router
-- Recharts, Lucide React
+</td>
+<td align="center" width="33%">
 
-**Backend:**
-- Node.js, Express.js
-- MongoDB, Mongoose
-- JWT, Multer, Cloudinary
+### 🏭 **Machine View**
+<img src="frontend/ss/Machines.png" alt="Sidebar Example" width="280" height="180">
 
-**Other:**
-- `dotenv`, `cors`, `react-hot-toast`
+</td>
+</tr>
+</table>
+
+*Click images to view full size*
+
+</div>
 
 ---
 
-## 🚀 Getting Started
+## ✨ **Features**
 
-### 🔧 Prerequisites
+<table>
+<tr>
+<td width="50%">
 
+### 🔐 **Security & Access**
+- 🔑 JWT Authentication system
+- 🛡️ Role-based access control
+- 👥 Users, Admins, and Managers
+- 🔒 Secure login & registration
+
+</td>
+<td width="50%">
+
+### 🏭 **Machine Management**
+- ⚙️ Add, edit, and monitor machines
+- 📊 Real-time machine status
+- 🔧 Equipment tracking
+- 📋 Machine documentation
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🎫 **Ticketing & Incidents**
+- 🎯 Raise and track tickets
+- 🚨 Industrial safety incident logging
+- 📝 Detailed incident reports
+- ✅ Ticket closure workflow
+
+</td>
+<td width="50%">
+
+### 📊 **Analytics & Maintenance**
+- 📅 Preventive maintenance scheduler
+- 📈 Interactive charts with Recharts
+- 📁 File uploads via Cloudinary
+- 📱 Fully responsive design
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🧰 **Tech Stack**
+
+<div align="center">
+
+### **Frontend**
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### **Backend**
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+
+### **Tools & Services**
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+
+</div>
+
+---
+
+## 🚀 **Quick Installation**
+
+> **Get the platform running locally in just a few steps!**
+
+### **Prerequisites**
 - Node.js v18 or later
 - MongoDB (Local or Atlas)
 - Cloudinary account (for uploads)
 
----
-
-### 1️⃣ Clone the Repo
-
-```bash
+### **Step 1:** Clone the Repository
+\`\`\`bash
 git clone https://github.com/yourusername/imsp.git
 cd imsp
-```
+\`\`\`
 
----
-
-### 2️⃣ Backend Setup
-
-```bash
+### **Step 2:** Backend Setup
+\`\`\`bash
 cd backend
 npm install
-```
+\`\`\`
 
-📁 Create a `.env` file:
-
-```env
+Create a `.env` file:
+\`\`\`env
 NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/imsp
@@ -84,99 +152,168 @@ CORS_ORIGIN=http://localhost:5173
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
-```
+\`\`\`
 
-▶️ Start server:
-
-```bash
+Start the server:
+\`\`\`bash
 npm start
-```
+\`\`\`
 
----
-
-### 3️⃣ Frontend Setup
-
-```bash
+### **Step 3:** Frontend Setup
+\`\`\`bash
 cd ../frontend
 npm install
 npm run dev
-```
+\`\`\`
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
----
-
-## 📁 Folder Structure
-
-```
-backend/
-├── config/
-├── models/
-├── routes/
-├── middlewares/
-├── server.js
-└── .env
-
-frontend/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── contexts/
-│   ├── pages/
-│   └── App.jsx
-├── screenshots/
-├── tailwind.config.js
-└── vite.config.js
-```
+### **Step 4:** You're Ready! 🎉
+Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ---
 
-## 🛠 Customization
+## 📂 **Project Structure**
 
-- 🎨 **Tailwind Config:** Edit `tailwind.config.js` for theme tweaks.
-- ☁️ **Cloudinary:** Setup in `backend/config/cloudinary.js` and `.env`
-- 📊 **Charts:** Powered by [Recharts](https://recharts.org)
-
----
-
-## 🧪 Scripts
-
-### Backend
-
-```bash
-npm start       # Run backend
-```
-
-### Frontend
-
-```bash
-npm run dev     # Dev mode
-npm run build   # Production build
-```
-
----
-
-## 🧯 Troubleshooting
-
-- **Tailwind not loading?**
-  - Check `@tailwind` in `index.css`
-  - Restart Vite server after updates
-
-- **MongoDB issues?**
-  - Ensure your MongoDB URI is correct and server is running
-
-- **Cloudinary not uploading?**
-  - Double-check credentials in `.env`
+\`\`\`
+📁 imsp/
+├── 📁 backend/
+│   ├── 📁 config/              # Database & service configs
+│   ├── 📁 models/              # MongoDB schemas
+│   ├── 📁 routes/              # API endpoints
+│   ├── 📁 middlewares/         # Auth & validation
+│   ├── 📄 server.js            # Main server file
+│   └── 📄 .env                 # Environment variables
+├── 📁 frontend/
+│   ├── 📁 src/
+│   │   ├── 📁 assets/          # Static assets
+│   │   ├── 📁 components/      # React components
+│   │   ├── 📁 contexts/        # React contexts
+│   │   ├── 📁 pages/           # Page components
+│   │   └── 📄 App.jsx          # Main app component
+│   ├── 📁 screenshots/         # Project screenshots
+│   ├── 📄 tailwind.config.js   # Tailwind configuration
+│   └── 📄 vite.config.js       # Vite configuration
+└── 📄 README.md                # This file
+\`\`\`
 
 ---
 
-## ⚖️ License
+## 🛠 **Customization**
 
-[MIT](https://choosealicense.com/licenses/mit/) © 2025 IMSP
+| Component | Description | File Location |
+|-----------|-------------|---------------|
+| 🎨 **Themes** | Customize colors and styling | `tailwind.config.js` |
+| ☁️ **File Upload** | Configure Cloudinary settings | `backend/config/cloudinary.js` |
+| 📊 **Charts** | Modify analytics visualizations | Uses [Recharts](https://recharts.org) |
+| 🔐 **Authentication** | JWT configuration | `backend/middlewares/auth.js` |
 
+---
 
-## Credits
+## 🧪 **Available Scripts**
 
-- [Lucide Icons](https://lucide.dev/)
-- [Recharts](https://recharts.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
+### **Backend Commands**
+\`\`\`bash
+npm start          # Start production server
+npm run dev        # Start development server with nodemon
+\`\`\`
+
+### **Frontend Commands**
+\`\`\`bash
+npm run dev        # Start development server
+npm run build      # Create production build
+npm run preview    # Preview production build
+\`\`\`
+
+---
+
+## 🧯 **Troubleshooting**
+
+<details>
+<summary><strong>🎨 Tailwind CSS not loading?</strong></summary>
+
+- Ensure `@tailwind` directives are in `src/index.css`
+- Restart Vite development server
+- Check `tailwind.config.js` configuration
+
+</details>
+
+<details>
+<summary><strong>🗄️ MongoDB connection issues?</strong></summary>
+
+- Verify MongoDB URI in `.env` file
+- Ensure MongoDB server is running
+- Check network connectivity for Atlas
+
+</details>
+
+<details>
+<summary><strong>☁️ Cloudinary upload problems?</strong></summary>
+
+- Double-check credentials in `.env`
+- Verify Cloudinary account is active
+- Check file size limits
+
+</details>
+
+---
+
+## 🤝 **Contributing**
+
+We welcome contributions! Here's how you can help:
+
+1. 🍴 **Fork** the repository
+2. 🌿 **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. 💾 **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. 📤 **Push** to the branch (`git push origin feature/amazing-feature`)
+5. 🔄 **Open** a Pull Request
+
+---
+
+## 🧑‍💻 **Author**
+
+<div align="center">
+
+### **Ayush Patel**
+
+*Full Stack Developer & Industrial Safety Enthusiast*
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ayush-patel1)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ayush-patel05/)
+
+</div>
+
+---
+
+## 📄 **License**
+
+<div align="center">
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://choosealicense.com/licenses/mit/)
+
+*Free to use, modify, and share* 🎉
+
+</div>
+
+---
+
+## 🙏 **Credits**
+
+Special thanks to these amazing tools and libraries:
+
+- [Lucide Icons](https://lucide.dev/) - Beautiful & consistent icons
+- [Recharts](https://recharts.org/) - Powerful charting library
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Cloudinary](https://cloudinary.com/) - Media management platform
+
+---
+
+<div align="center">
+
+### ⭐ **Star this repo if you found it helpful!**
+
+**Made with ❤️ by [Ayush Patel](https://github.com/ayush-patel1)**
+
+*Building safer industrial environments, one line of code at a time* 🏭
+
+</div>
