@@ -1,5 +1,3 @@
-
-````markdown
 <div align="center">
 
 # 🚧 Hindalco Safety & Maintenance Platform
@@ -134,17 +132,15 @@
 ```bash
 git clone https://github.com/yourusername/imsp.git
 cd imsp
-````
+```
 
 ### **Step 2:** Backend Setup
-
 ```bash
 cd backend
 npm install
 ```
 
 Create a `.env` file:
-
 ```env
 NODE_ENV=development
 PORT=5000
@@ -159,13 +155,11 @@ CLOUDINARY_API_SECRET=your-api-secret
 ```
 
 Start the server:
-
 ```bash
 npm start
 ```
 
 ### **Step 3:** Frontend Setup
-
 ```bash
 cd ../frontend
 npm install
@@ -173,7 +167,6 @@ npm run dev
 ```
 
 ### **Step 4:** You're Ready! 🎉
-
 Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ---
@@ -234,19 +227,18 @@ Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## 🛠 **Customization**
 
-| Component             | Description                     | File Location                         |
-| --------------------- | ------------------------------- | ------------------------------------- |
-| 🎨 **Themes**         | Customize colors and styling    | `tailwind.config.js`                  |
-| ☁️ **File Upload**    | Configure Cloudinary settings   | `backend/config/cloudinary.js`        |
-| 📊 **Charts**         | Modify analytics visualizations | Uses [Recharts](https://recharts.org) |
-| 🔐 **Authentication** | JWT configuration               | `backend/middlewares/auth.js`         |
+| Component | Description | File Location |
+|-----------|-------------|---------------|
+| 🎨 **Themes** | Customize colors and styling | `tailwind.config.js` |
+| ☁️ **File Upload** | Configure Cloudinary settings | `backend/config/cloudinary.js` |
+| 📊 **Charts** | Modify analytics visualizations | Uses [Recharts](https://recharts.org) |
+| 🔐 **Authentication** | JWT configuration | `backend/middlewares/auth.js` |
 
 ---
 
 ## 🧪 **Available Scripts**
 
 ### **Backend Commands**
-
 ```bash
 # Navigate to backend directory
 cd backend
@@ -265,7 +257,6 @@ npm test
 ```
 
 ### **Frontend Commands**
-
 ```bash
 # Navigate to frontend directory
 cd frontend
@@ -293,27 +284,27 @@ npm run lint
 <details>
 <summary><strong>🎨 Tailwind CSS not loading?</strong></summary>
 
-* Ensure `@tailwind` directives are in `src/index.css`
-* Restart Vite development server
-* Check `tailwind.config.js` configuration
+- Ensure `@tailwind` directives are in `src/index.css`
+- Restart Vite development server
+- Check `tailwind.config.js` configuration
 
 </details>
 
 <details>
 <summary><strong>🗄️ MongoDB connection issues?</strong></summary>
 
-* Verify MongoDB URI in `.env` file
-* Ensure MongoDB server is running
-* Check network connectivity for Atlas
+- Verify MongoDB URI in `.env` file
+- Ensure MongoDB server is running
+- Check network connectivity for Atlas
 
 </details>
 
 <details>
 <summary><strong>☁️ Cloudinary upload problems?</strong></summary>
 
-* Double-check credentials in `.env`
-* Verify Cloudinary account is active
-* Check file size limits
+- Double-check credentials in `.env`
+- Verify Cloudinary account is active
+- Check file size limits
 
 </details>
 
@@ -339,8 +330,8 @@ We welcome contributions! Here's how you can help:
 
 *Full Stack Developer & Industrial Safety Enthusiast*
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/ayush-patel1)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge\&logo=linkedin\&logoColor=white)](https://www.linkedin.com/in/ayush-patel05/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ayush-patel1)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ayush-patel05/)
 
 </div>
 
@@ -364,10 +355,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 Special thanks to these amazing tools and libraries:
 
-* [Lucide Icons](https://lucide.dev/) - Beautiful & consistent icons
-* [Recharts](https://recharts.org/) - Powerful charting library
-* [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-* [Cloudinary](https://cloudinary.com/) - Media management platform
+- [Lucide Icons](https://lucide.dev/) - Beautiful & consistent icons
+- [Recharts](https://recharts.org/) - Powerful charting library
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Cloudinary](https://cloudinary.com/) - Media management platform
 
 ---
 
@@ -380,7 +371,4 @@ Special thanks to these amazing tools and libraries:
 *Building safer industrial environments, one line of code at a time* 🏭
 
 </div>
-```
-
----
 
