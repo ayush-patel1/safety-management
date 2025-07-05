@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚧 Hindalco Safety & Maintenance Platform
+# 🚧  Safety & Maintenance Platform
 
 ### *A powerful full-stack industrial web platform for modern factory safety and efficiency*
 
