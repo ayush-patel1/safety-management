@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { User, Mail, Phone, Building, Shield, Edit, Save, X } from "lucide-react"
 import axios from "axios"
 import toast from "react-hot-toast"
-
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_URL
 const Profile = () => {
   const { user, fetchUser } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
@@ -24,10 +24,12 @@ const Profile = () => {
   }
 
   const handleSave = async () => {
+    console.log(API_BASE_URL)
     setLoading(true)
     try {
       const token = localStorage.getItem("token")
-      await axios.put(`${process.env.VITE_REACT_APP_API_URL}/api/auth/profile`, formData, {
+      
+      await axios.put(`${API_BASE_URL}/api/auth/profile`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

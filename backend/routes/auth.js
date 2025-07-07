@@ -106,7 +106,7 @@ router.put("/profile", auth, async (req, res) => {
         return res.status(400).json({ message: "Email already in use" })
       }
     }
-
+   
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { name, email, phone, department },
@@ -126,6 +126,7 @@ router.put("/profile", auth, async (req, res) => {
     })
   } catch (error) {
     console.error(error)
+     console.log("Updating user profile:", { userId, name, email, phone, department })
     res.status(500).json({ message: "Failed to update profile" })
   }
 })
