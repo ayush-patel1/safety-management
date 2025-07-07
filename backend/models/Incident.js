@@ -4,7 +4,7 @@ const incidentSchema = new mongoose.Schema(
   {
     incidentNumber: {
       type: String,
-      required: true,
+      // required: true,    //since validator runs before pre-save hook, we don't need this
       unique: true,
     },
     title: {
