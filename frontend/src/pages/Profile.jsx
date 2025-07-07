@@ -187,7 +187,7 @@ const Profile = () => {
                   disabled={loading}
                 />
               ) : (
-                <p className="text-gray-900">{user?.phone || "Not provided"}</p>
+                <p className="text-gray-900">{user?.phone}</p>
               )}
             </div>
 
