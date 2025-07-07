@@ -95,4 +95,40 @@ router.get("/me", auth, async (req, res) => {
   })
 })
 
+router.put("/profile", auth, async (req, res) => {
+  try {
+    const userId = req.user._id
+    const { name, email, phone, department } = req.body
+
+    if (email) {
+      const existingUser = await User.findOne({ email })
+      if (existingUser && existingUser._id.toString() !== userId.toString()) {
+        return res.status(400).json({ message: "Email already in use" })
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, email, phone, department },
+      { new: true, runValidators: true }
+    )
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        department: updatedUser.department,
+        role: updatedUser.role,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Failed to update profile" })
+  }
+})
+
+
 module.exports = router
